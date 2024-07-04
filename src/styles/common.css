@@ -99,3 +99,25 @@ table {
 .flex-col {
   flex-direction: column;
 }
+.display-none {
+  display: none;
+}
+p,
+span,
+h1,
+input,
+button,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}
+form > input {
+  width: min-content;
+}
+input {
+  
+}

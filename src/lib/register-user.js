@@ -2,7 +2,7 @@ import {
   getCredentialRegister,
   validateRegister,
   register,
-  controlRegister,
+  setRegisterErrors,
 } from "./auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -11,12 +11,12 @@ document.addEventListener("DOMContentLoaded", () => {
   registerForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const credential = getCredentialRegister();
-    const validate = validateRegister(credential);
+    const errors = validateRegister(credential);
 
-    controlRegister(validate);
-
-    const log = register(credential);
-    if (log) {
+    if (!!Object.keys(errors).length) {
+      setRegisterErrors(errors);
+    } else {
+      register(credential);
       window.location = "./homepage.html";
     }
   });

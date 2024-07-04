@@ -2,7 +2,7 @@ import {
   getCredentialLogin,
   validateLogin,
   login,
-  controlLogin,
+  setLoginErrors,
 } from "./auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -11,12 +11,14 @@ document.addEventListener("DOMContentLoaded", () => {
   loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const credential = getCredentialLogin();
-    const validate = validateLogin(credential);
+    const errors = validateLogin(credential);
 
-    controlLogin(validate);
+    if (!!Object.keys(errors).length) {
+      setLoginErrors(errors);
+    }
 
-    const log = login(credential);
-    if (log) {
+    const user = login(credential);
+    if (user) {
       window.location = "./homepage.html";
     }
   });
