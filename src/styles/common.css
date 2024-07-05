@@ -1,5 +1,6 @@
 :root {
   --spacer: 1rem;
+  --color-error: red;
 }
 svg {
   height: var(--spacer);
@@ -15,7 +16,7 @@ body {
   background-color: #f0f0f0;
 }
 
-.button {
+button {
   padding: 10px 20px;
   font-size: 16px;
   margin-top: 20px;
@@ -90,4 +91,32 @@ table {
 }
 .gap-5 {
   gap: var(--spacer) * 1.75;
+}
+.error {
+  color: var(--color-error);
+}
+.flex-col {
+  flex-direction: column;
+}
+.display-none {
+  display: none;
+}
+p,
+span,
+h1,
+input,
+button,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}
+form > input {
+  width: min-content;
+}
+input {
+  margin: 0;
 }
