@@ -1,9 +1,9 @@
-import { validateRegister, generateId } from "./src/lib/login";
+import { validateRegister, passwordRegex } from "./src/lib/auth";
+import { generateId } from "./src/lib/common";
 import { expect, test } from "vitest";
 
- //Minimum eight characters, at least one letter, one number and one special character:
-const passwordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,15}$/;
+//Minimum eight characters, at least one letter, one number and one special character:
+
 
 test("password min lenght should be 8", () => {
   expect(passwordRegex.test("dr55")).toBe(false);
