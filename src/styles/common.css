@@ -92,7 +92,6 @@ table {
 .gap-5 {
   gap: var(--spacer) * 1.75;
 }
-
 .error {
   color: var(--color-error);
 }
