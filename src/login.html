@@ -3,34 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles/common.css" />
+    <link rel="stylesheet" href="styles/ui-form.css" />
     <title>Document</title>
   </head>
   <body>
-    <form id="loginForm" class="flex flex-col gap-2">
-      <input min="3" max="10" id="user" type="user" placeholder="User" />
-      <span id="errorUser" class="error"></span>
-      <div class="flex gap-2">
-        <input min="5" id="password" type="password" placeholder="Password" />
-        <button
-          class="flex justify-center items-center"
-          type="button"
-          id="reveal-password-btn"
-          onclick="revealPassword('reveal-password-btn','password')"
-        >
-          <img src="../assets/img/eye-slash.svg" />
-        </button>
+    <div class="container">
+      <div class="form-box">
+        <form id="loginForm" class="flex flex-col gap-2">
+          <h2>Login</h2>
+          <div class="logo">
+            <img src="../assets/img/noto-v1_notebook.svg" />
+          </div>
+          <input min="3" max="10" id="user" type="text" placeholder="User" />
+          <span id="errorUser" class="error"></span>
+          <div class="flex gap-2">
+            <input
+              min="5"
+              id="password"
+              type="password"
+              placeholder="Password"
+            />
+            <button
+              class="flex justify-center items-center"
+              type="button"
+              id="reveal-password-btn"
+              onclick="revealPassword('reveal-password-btn','password')"
+            >
+              <img src="../assets/img/eye-slash.svg" />
+            </button>
+          </div>
+          <span id="errorPass" class="error"></span>
+          <button type="submit">Sign in</button>
+          <div class="container signin">
+            <p>Already have an account? <a href="register.html">Sign up</a>.</p>
+          </div>
+        </form>
       </div>
-      <span id="errorPass" class="error"></span>
-      <p>
-        By creating an account you agree to our
-        <a href="#">Terms & Privacy</a>.
-      </p>
-      <button type="submit" value="submit">Registrati!</button>
-      <div class="container signin">
-        <p>Already have an account? <a href="register.html">Sign up</a>.</p>
-      </div>
-    </form>
+    </div>
     <script type="module" src="lib/models/user.js"></script>
     <script type="module" src="lib/auth.js"></script>
     <script type="module" src="lib/login-user.js"></script>

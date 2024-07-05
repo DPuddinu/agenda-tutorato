@@ -119,5 +119,5 @@ form > input {
   width: min-content;
 }
 input {
-  
+  margin: 0;
 }

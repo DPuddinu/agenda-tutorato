@@ -1,5 +1,5 @@
 import { User } from "./models/user.js";
-import { UserAuth } from "./models/UserAuth.js";
+import { UserAuth } from "./models/user-auth.js";
 import {
   USERAUTH_KEY,
   USERS_KEY,
