@@ -13,11 +13,11 @@ export function getAppointments() {
 }
 
 export function createAppointment(appointment) {
-  const appointments = this.getAppointments();
+  const appointments = getAppointments();
   const id = generateId();
-  const appointment = new Appointment({ id, ...appointment });
-  appointments.push(appointment);
-  this.saveAppointments(appointments);
+  const newAppointment = new Appointment({ id, ...appointment });
+  appointments.push(newAppointment);
+  saveAppointments(appointments);
   return appointment;
 }
 
@@ -26,8 +26,8 @@ export function saveAppointments(appointments) {
 }
 
 export function updateAppointment(updatedAppointment) {
-  const appointments = this.getAppointments();
-  this.saveAppointments(
+  const appointments = getAppointments();
+  saveAppointments(
     appointments.map((appointment) =>
       appointment.id === updatedAppointment.id
         ? updatedAppointment
@@ -37,8 +37,6 @@ export function updateAppointment(updatedAppointment) {
 }
 
 export function deleteAppointment(id) {
-  const appointments = this.getAppointments();
-  this.saveAppointments(
-    appointments.filter((appointment) => appointment.id !== id)
-  );
+  const appointments = getAppointments();
+  saveAppointments(appointments.filter((appointment) => appointment.id !== id));
 }
