@@ -36,7 +36,7 @@
           <header>
             <h2>Create appointment</h2>
             <form method="dialog">
-              <button>x</button>
+              <button type="button">x</button>
             </form>
           </header>
           <section>
@@ -114,7 +114,7 @@
               <th>Edit</th>
               <th>Delete</th>
             </tr>
-            <tr>
+            <tr id="01">
               <td>mar 25 giu</td>
               <td>appuntamento</td>
               <td>tag</td>
@@ -142,7 +142,7 @@
                 </button>
               </td>
               <td>
-                <button class="buttons">
+                <button data-row="01" class="buttons delete-btn">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -163,5 +163,6 @@
       </section>
     </div>
     <script src="./lib/dialog.js"></script>
+    <script type="module" src="./lib/control-appointments.js"></script>
   </body>
 </html>
