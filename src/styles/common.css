@@ -14,14 +14,14 @@ body {
 }
 
 button,
-input[type='reset'],
-input[type='submit'] {
-  padding: 0.25rem 0.50rem;
+input[type="reset"],
+input[type="submit"] {
+  padding: 0.25rem 0.5rem;
   font-size: 16px;
   margin-top: 20px;
   cursor: pointer;
 }
-input[type='date'] {
+input[type="date"] {
   padding: var(--spacer);
   border-radius: 0.6rem;
   border: transparent;

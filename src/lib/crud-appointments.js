@@ -1,15 +1,12 @@
 import { Appointment } from "./models/appointment.js";
-import { generateId } from "./common.js";
-
-const APPOINTMENTS_KEY = "appointments";
-
-// User-generated data extracted from HTML page
-// const DESCRIPTION_KEY = "description";
-// const DUEDATE_KEY = "dueDate";
-// const CATEGORY_KEY = "category";
+import { generateId, APPOINTMENTS_KEY } from "./common.js";
 
 export function getAppointments() {
   return JSON.parse(localStorage.getItem(APPOINTMENTS_KEY)) || [];
+}
+
+export function getAppointmentById(id) {
+  return getAppointments().find((appointment) => appointment.id === id);
 }
 
 export function createAppointment(appointment) {
@@ -30,7 +27,10 @@ export function updateAppointment(updatedAppointment) {
   saveAppointments(
     appointments.map((appointment) =>
       appointment.id === updatedAppointment.id
-        ? updatedAppointment
+        ? {
+            ...updatedAppointment,
+            updateDate: new Date(),
+          }
         : appointment
     )
   );
