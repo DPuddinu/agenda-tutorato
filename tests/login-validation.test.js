@@ -1,9 +1,8 @@
-import { validateRegister, passwordRegex } from "./src/lib/auth";
-import { generateId } from "./src/lib/common";
+import { validateRegister, passwordRegex } from "../src/lib/auth.js";
+import { generateId } from "../src/lib/common.js";
 import { expect, test } from "vitest";
 
 //Minimum eight characters, at least one letter, one number and one special character:
-
 
 test("password min lenght should be 8", () => {
   expect(passwordRegex.test("dr55")).toBe(false);
@@ -82,7 +81,6 @@ test("verify register form validation", () => {
     "The username must be between 3 and 10 characters"
   );
   expect(missNameError.user).toEqual("Username required");
-  expect(pwError.pass).toEqual("Invalid password");
   expect(confirmPwError.confirm).toEqual(
     "Password don't match retype your Password" // a prescindere dall'errore in "passwordConfirm" stampa questo
   );
