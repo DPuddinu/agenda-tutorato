@@ -135,3 +135,25 @@ form > input {
 input {
   margin: 0;
 }
+.sort-btn {
+  border: none;
+  background: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  background: white;
+}
+.icon-sm {
+  height: 1.5rem;
+  width: 1.5rem;
+  color: black;
+}
+.arrow {
+  content: url("../../assets/img/arrow-down.svg");
+}
+.arrow[data-asc="true"] {
+  content: url("../../assets/img/arrow-down.svg");
+}
+.arrow[data-asc="false"] {
+  content: url("../../assets/img/arrow-up.svg");
+}

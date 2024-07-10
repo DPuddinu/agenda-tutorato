@@ -77,37 +77,26 @@
         </dialog>
 
         <main class="grow">
-          <table class="py-1">
+          <table id="appointmentContainer" class="py-1">
             <tr>
-              <th class="flex items-center justify-center gap-2">
-                <button class="date">
-                  <span> Date </span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="size-6"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                    />
-                  </svg>
+              <th class="flex items-center justify-center gap-">
+                Creation Date
+                <button
+                  id="arrowDateBtn"
+                  class="sort-btn"
+                  onclick="toggleImgIcon('arrowDateBtn', '../assets/img/arrow-down.svg', '../assets/img/arrow-up.svg')">
+                  <img class="arrow icon-sm" data-asc="true"/>
                 </button>
               </th>
               <th>Description</th>
-              <th>
-                <select name="tag" id="tag">
-                  <option value="">Tag</option>
-                  <option value="tag1">tag1</option>
-                  <option value="tag2">tag2</option>
-                  <option value="tag3">tag3</option>
-                  <option value="tag4">tag4</option>
-                  <option value="tag5">tag5</option>
-                </select>
+              <th class="flex items-center justify-center gap-">
+                Tag
+                <button
+                  id="arrowTagBtn"
+                  class="sort-btn"
+                  onclick="toggleImgIcon('arrowTagBtn', '../assets/img/arrow-down.svg', '../assets/img/arrow-up.svg')">
+                  <img class="arrow icon-sm" data-asc="true"/>
+                </button>
               </th>
 
               <th>Completed</th>
@@ -164,5 +153,6 @@
     </div>
     <script src="./lib/dialog.js"></script>
     <script type="module" src="./lib/control-appointments.js"></script>
+    <script src="./lib/ui.js"></script>
   </body>
 </html>
