@@ -7,6 +7,7 @@ import {
   CONFIRM_KEY,
   PASS_KEY,
   USERNAME_KEY,
+  LOGGEDUSER_KEY,
 } from "./common.js";
 
 //Funzione per prendere i dati
@@ -45,6 +46,7 @@ export function register({ name, password, passwordConfirm }) {
     // Salva il nuovo array nel localStorage
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
     localStorage.setItem(USERAUTH_KEY, JSON.stringify(usersAuth));
+    sessionStorage.setItem(LOGGEDUSER_KEY, authUser.user_id);
     alert("Registrazione completata!");
   } else {
     alert("Invalid credentials!");
@@ -64,6 +66,7 @@ export function login({ name, password }) {
         user.name === name &&
         authUser.password === password
       ) {
+        sessionStorage.setItem(LOGGEDUSER_KEY, authUser.user_id);
         return user;
       }
     }

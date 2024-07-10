@@ -12,10 +12,15 @@ export function getAppointmentById(id) {
 export function createAppointment(appointment) {
   const appointments = getAppointments();
   const id = generateId();
-  const newAppointment = new Appointment({ id, ...appointment });
+  const newAppointment = new Appointment({
+    ...appointment,
+    id,
+    creationDate: new Date(),
+    updateDate: new Date(),
+  });
   appointments.push(newAppointment);
   saveAppointments(appointments);
-  return appointment;
+  return newAppointment;
 }
 
 export function saveAppointments(appointments) {
