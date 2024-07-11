@@ -59,12 +59,12 @@ export function addAppointmentRow(appointment) {
   categoryCell.textContent = category;
 
   const completedCell = document.createElement("td");
-  const completedCheckbox = document.createElement("input");
-  completedCheckbox.type = "checkbox";
-  completedCheckbox.classList.add("checkmark");
-  completedCheckbox.name = "checkbox";
-  completedCheckbox.value = "checkbox";
-  completedCell.appendChild(completedCheckbox);
+  const completed = document.createElement("input");
+  completed.type = "checkbox";
+  completed.classList.add("checkmark");
+  completed.name = "checkbox";
+  completed.checked = !!appointment.completionDate;
+  completedCell.appendChild(completed);
 
   const editCell = document.createElement("td");
   const editButton = document.createElement("button");
