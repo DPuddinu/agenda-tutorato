@@ -22,14 +22,9 @@ export function getCredentialLogin() {
   return { name, password };
 }
 
-export function register({ name, password, passwordConfirm }) {
-  const validationErrors = validateRegister({
-    name,
-    password,
-    passwordConfirm,
-  });
+export function register({ name, password }) {
+  
   const user_id = generateId();
-  const id = user_id;
   // prendi l'oggetto users dalla key USERS_KEY, convertilo in oggetto con JSON.parse(), verifica che non sia già presente l'utente, se non è presente fai il push del nuovo utente nell'array, infine salva il nuovo array nel localstorage
   // Recupera l'oggetto users dal localStorage
   const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
@@ -40,13 +35,13 @@ export function register({ name, password, passwordConfirm }) {
 
   if (!userExists) {
     // Aggiungi il nuovo utente all'array
-    users.push(new User({ id, name }));
+    users.push(new User({ id: user_id, name }));
     usersAuth.push(new UserAuth({ id: generateId(), password, user_id }));
 
     // Salva il nuovo array nel localStorage
+    sessionStorage.setItem(LOGGEDUSER_KEY, user_id);
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
     localStorage.setItem(USERAUTH_KEY, JSON.stringify(usersAuth));
-    sessionStorage.setItem(LOGGEDUSER_KEY, authUser.user_id);
     alert("Registrazione completata!");
   } else {
     alert("Invalid credentials!");
