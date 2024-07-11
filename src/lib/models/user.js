@@ -1,6 +1,7 @@
 export class User {
-  constructor({id, name}) {
-    this.id = id;
-    this.name = name;
+  id;
+  name;
+  constructor(user) {
+    Object.assign(this, user);
   }
 }

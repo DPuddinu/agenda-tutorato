@@ -28,7 +28,7 @@
       cursor: pointer;
       filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.134));
     }
-    svg {
+    svg, img {
       border-radius: 100%;
       height: 3rem;
       width: 3rem;
@@ -46,7 +46,7 @@
 .buttons {
   border: none;
   background: white;
-  svg {
+  svg, img {
     height: 1.5rem;
     width: 1.5rem;
     color: var(--primary);
