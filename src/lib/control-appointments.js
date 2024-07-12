@@ -1,4 +1,8 @@
-import { deleteAppointment, createAppointment } from "./crud-appointments.js";
+import {
+  deleteAppointment,
+  createAppointment,
+  getAppointments,
+} from "./crud-appointments.js";
 import { Appointment } from "./models/appointment.js";
 import {
   LOGGEDUSER_KEY,
@@ -23,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
       setPayloadErrors(errors);
     } else {
       const appointment = createAppointment(payload);
-
       addAppointmentRow(appointment);
       document.getElementById("dialog").close();
     }
@@ -31,6 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("dialog").addEventListener("reset", () => {
     resetPayloadErrors();
   });
+
+  const appointments = getAppointments();
+  populateAppointmentsTable(appointments);
 });
 
 function setDeleteRowBtn(btn) {
@@ -133,18 +139,24 @@ function resetPayloadErrors() {
   document.getElementById("errorCategory").textContent = "";
 }
 
-function clearAppointmentRows() {
-  const table = document.getElementById("appointmentContainer");
-  const rows = table.getElementsByTagName("tr");
-  
-  while (rows.length > 1) {
-    table.deleteRow(1);
-  }
+function clearAppointments() {
+  const tableDataContainer = document.querySelectorAll(
+    "#appointmentContainer tr"
+  );
+  tableDataContainer.forEach((row, i) => {
+    if (i > 0) {
+      row.remove();
+    }
+  });
 }
 
-function updateUI(appointmentsList) {
-  clearAppointmentRows();
-  appointmentsList.forEach((appointment) => {
+function populateAppointmentsTable(appointments) {
+  appointments.forEach((appointment) => {
     addAppointmentRow(appointment);
   });
+}
+
+function updateUI(appointments) {
+  clearAppointments();
+  populateAppointmentsTable(appointments);
 }
