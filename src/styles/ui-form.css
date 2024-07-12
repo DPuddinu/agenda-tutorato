@@ -59,7 +59,6 @@ button[type="submit"] {
   border-radius: 12px;
   color: white;
   font-size: 16px;
-  cursor: pointer;
 }
 
 button[type="submit"]:hover {
@@ -91,7 +90,6 @@ button#reveal-password-btn,
 button#reveal-passwordConfirm-btn {
   background-color: transparent;
   border: none;
-  cursor: pointer;
   padding: 0;
 }
 
