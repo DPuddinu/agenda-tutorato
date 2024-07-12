@@ -5,6 +5,7 @@ import {
   DESCRIPTION_KEY,
   CATEGORY_KEY,
   DUEDATE_KEY,
+  APPOINTMENTS_KEY,
 } from "./common.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -24,7 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const appointment = createAppointment(payload);
 
       addAppointmentRow(appointment);
-
       document.getElementById("dialog").close();
     }
   });
@@ -74,7 +74,7 @@ export function addAppointmentRow(appointment) {
   pencilIcon.src = "../assets/img/icons/pencil.svg";
   editButton.appendChild(pencilIcon);
   editCell.appendChild(editButton);
-  editCell.appendChild(editButton);
+  // setEditRowBtn(editButton);
 
   const deleteCell = document.createElement("td");
   const deleteButton = document.createElement("button");
@@ -127,7 +127,24 @@ function setPayloadErrors(errors) {
   }
   return errors;
 }
+
 function resetPayloadErrors() {
   document.getElementById("errorDescription").textContent = "";
   document.getElementById("errorCategory").textContent = "";
+}
+
+function clearAppointmentRows() {
+  const table = document.getElementById("appointmentContainer");
+  const rows = table.getElementsByTagName("tr");
+  
+  while (rows.length > 1) {
+    table.deleteRow(1);
+  }
+}
+
+function updateUI(appointmentsList) {
+  clearAppointmentRows();
+  appointmentsList.forEach((appointment) => {
+    addAppointmentRow(appointment);
+  });
 }
