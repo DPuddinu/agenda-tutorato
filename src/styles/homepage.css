@@ -1,10 +1,7 @@
 :root {
   --primary: #0092b9;
 }
-.container {
-  height: 100%;
-  display: flex;
-}
+
 .content {
   flex-grow: 1;
   display: flex;

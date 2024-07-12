@@ -1,10 +1,15 @@
-import { deleteAppointment, createAppointment } from "./crud-appointments.js";
+import {
+  deleteAppointment,
+  createAppointment,
+  getAppointments,
+} from "./crud-appointments.js";
 import { Appointment } from "./models/appointment.js";
 import {
   LOGGEDUSER_KEY,
   DESCRIPTION_KEY,
   CATEGORY_KEY,
   DUEDATE_KEY,
+  APPOINTMENTS_KEY,
 } from "./common.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -22,15 +27,16 @@ document.addEventListener("DOMContentLoaded", () => {
       setPayloadErrors(errors);
     } else {
       const appointment = createAppointment(payload);
-
       addAppointmentRow(appointment);
-
       document.getElementById("dialog").close();
     }
   });
   document.getElementById("dialog").addEventListener("reset", () => {
     resetPayloadErrors();
   });
+
+  const appointments = getAppointments();
+  populateAppointmentsTable(appointments);
 });
 
 function setDeleteRowBtn(btn) {
@@ -74,7 +80,7 @@ export function addAppointmentRow(appointment) {
   pencilIcon.src = "../assets/img/icons/pencil.svg";
   editButton.appendChild(pencilIcon);
   editCell.appendChild(editButton);
-  editCell.appendChild(editButton);
+  // setEditRowBtn(editButton);
 
   const deleteCell = document.createElement("td");
   const deleteButton = document.createElement("button");
@@ -127,7 +133,30 @@ function setPayloadErrors(errors) {
   }
   return errors;
 }
+
 function resetPayloadErrors() {
   document.getElementById("errorDescription").textContent = "";
   document.getElementById("errorCategory").textContent = "";
+}
+
+function clearAppointments() {
+  const tableDataContainer = document.querySelectorAll(
+    "#appointmentContainer tr"
+  );
+  tableDataContainer.forEach((row, i) => {
+    if (i > 0) {
+      row.remove();
+    }
+  });
+}
+
+function populateAppointmentsTable(appointments) {
+  appointments.forEach((appointment) => {
+    addAppointmentRow(appointment);
+  });
+}
+
+function updateUI(appointments) {
+  clearAppointments();
+  populateAppointmentsTable(appointments);
 }
