@@ -24,7 +24,7 @@ export function getAppointmentById(id) {
 }
 
 export function createAppointment(appointment) {
-  const loggedUserId = sessionStorage.get(LOGGEDUSER_KEY);
+  const loggedUserId = sessionStorage.getItem(LOGGEDUSER_KEY);
   if(!loggedUserId) return;
 
   const appointments = getAppointments();
@@ -42,7 +42,7 @@ export function createAppointment(appointment) {
 }
 
 export function saveAppointments(appointments) {
-  const loggedUserId = sessionStorage.get(LOGGEDUSER_KEY);
+  const loggedUserId = sessionStorage.getItem(LOGGEDUSER_KEY);
   if (!loggedUserId) return;
   localStorage.setItem(APPOINTMENTS_KEY, JSON.stringify(appointments));
 }
