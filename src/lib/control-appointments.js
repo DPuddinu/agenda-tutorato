@@ -10,12 +10,55 @@ import {
   CATEGORY_KEY,
   DUEDATE_KEY,
 } from "./common.js";
-
 document.addEventListener("DOMContentLoaded", () => {
+  let currentPage = 0;
+  const itemsPerPage = 10;
+  let paginatedAppointments = [];
+
+  function paginateAppointments(appointments) {
+    const pages = [];
+    for (let i = 0; i < appointments.length; i += itemsPerPage) {
+      pages.push(appointments.slice(i, i + itemsPerPage));
+    }
+    return pages;
+  }
+
+  function renderTable(page) {
+    clearAppointments();
+    paginatedAppointments[page].forEach((appointment) => {
+      addAppointmentRow(appointment);
+    });
+
+    document.getElementById("previousButton").disabled = page === 0;
+    document.getElementById("nextButton").disabled =
+      page === paginatedAppointments.length - 1;
+  }
+
+  document
+    .getElementById("previousButton")
+    .addEventListener("click", function () {
+      if (currentPage > 0) {
+        currentPage--;
+        renderTable(currentPage);
+      }
+    });
+
+  document.getElementById("nextButton").addEventListener("click", function () {
+    if (currentPage < paginatedAppointments.length - 1) {
+      currentPage++;
+      renderTable(currentPage);
+    }
+  });
+
+  const appointments = getAppointments();
+  paginatedAppointments = paginateAppointments(appointments);
+  renderTable(currentPage);
+
   const deleteButtons = document.querySelectorAll(".delete-btn");
   deleteButtons.forEach((button) => {
     setDeleteRowBtn(button);
   });
+
   document.getElementById("dialog").addEventListener("submit", (e) => {
     e.preventDefault();
     const payload = getAppointmentPayload();
@@ -28,14 +71,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const appointment = createAppointment(payload);
       addAppointmentRow(appointment);
       document.getElementById("dialog").close();
+      location.reload();
     }
   });
   document.getElementById("dialog").addEventListener("reset", () => {
     resetPayloadErrors();
   });
-
-  const appointments = getAppointments();
-  populateAppointmentsTable(appointments);
 });
 
 function setDeleteRowBtn(btn) {
@@ -44,7 +85,9 @@ function setDeleteRowBtn(btn) {
       const id = btn.dataset.row;
       deleteAppointment(id);
       const appointment = document.getElementById(id);
+      console.log(appointment);
       appointment.remove();
+      location.reload();
     }
   });
 }
@@ -98,7 +141,16 @@ export function addAppointmentRow(appointment) {
   row.appendChild(editCell);
   row.appendChild(deleteCell);
 
-  document.getElementById("appointmentContainer").appendChild(row);
+  // document.getElementById("appointmentContainer").appendChild(row);
+  const tableBody = document.querySelector("#table-appointment-body");
+  if (!tableBody) {
+    const newTBody = document.createElement("tbody");
+    newTBody.setAttribute("id", "table-appointment-body");
+    newTBody.appendChild(row);
+    document.getElementById("appointmentContainer").appendChild(newTBody);
+  } else {
+    tableBody.appendChild(row);
+  }
 }
 
 export function getAppointmentPayload() {
@@ -139,14 +191,10 @@ function resetPayloadErrors() {
 }
 
 function clearAppointments() {
-  const tableDataContainer = document.querySelectorAll(
-    "#appointmentContainer tr"
-  );
-  tableDataContainer.forEach((row, i) => {
-    if (i > 0) {
-      row.remove();
-    }
-  });
+  const tableDataContainer = document.querySelector("#table-appointment-body");
+  if (tableDataContainer) {
+    tableDataContainer.remove();
+  }
 }
 
 function populateAppointmentsTable(appointments) {

@@ -98,66 +98,100 @@
 
         <main class="grow">
           <table id="appointmentContainer" class="py-1">
-            <tr>
-              <th class="flex items-center justify-center gap-">
-                Creation Date
-                <button
-                  id="arrowDateBtn"
-                  class="sort-btn"
-                  onclick="toggleImgIcon('arrowDateBtn', '../assets/img/arrow-down.svg', '../assets/img/arrow-up.svg')"
-                >
-                  <img class="arrow icon-sm" data-asc="true" />
-                </button>
-              </th>
-              <th>Description</th>
-              <th class="flex items-center justify-center gap-">
-                Tag
-                <button
-                  id="arrowTagBtn"
-                  class="sort-btn"
-                  onclick="toggleImgIcon('arrowTagBtn', '../assets/img/arrow-down.svg', '../assets/img/arrow-up.svg')"
-                >
-                  <img class="arrow icon-sm" data-asc="true" />
-                </button>
-              </th>
+            <thead>
+              <tr>
+                <th class="flex items-center justify-center gap-">
+                  Creation Date
+                  <button
+                    id="arrowDateBtn"
+                    class="sort-btn"
+                    onclick="toggleImgIcon('arrowDateBtn', '../assets/img/arrow-down.svg', '../assets/img/arrow-up.svg')"
+                  >
+                    <img class="arrow icon-sm" data-asc="true" />
+                  </button>
+                </th>
+                <th>Description</th>
+                <th class="flex items-center justify-center gap-">
+                  Tag
+                  <button
+                    id="arrowTagBtn"
+                    class="sort-btn"
+                    onclick="toggleImgIcon('arrowTagBtn', '../assets/img/arrow-down.svg', '../assets/img/arrow-up.svg')"
+                  >
+                    <img class="arrow icon-sm" data-asc="true" />
+                  </button>
+                </th>
 
-              <th>Completed</th>
-              <th>Edit</th>
-              <th>Delete</th>
-            </tr>
-            <tr id="01">
-              <td>mar 25 giu</td>
-              <td>appuntamento</td>
-              <td>tag</td>
-              <td>
-                <input
-                  type="checkbox"
-                  class="checkmark"
-                  id="checkbox"
-                  name="checkbox"
-                  value="checkbox"
-                />
-              </td>
-              <td>
-                <button class="buttons">
-                  <img
-                    src="/assets/img/icons/pencil.svg"
-                    height="24px"
-                    width="24px"
+                <th>Completed</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody id="table-appointment-body">
+              <tr id="01">
+                <td>mar 25 giu</td>
+                <td>appuntamento</td>
+                <td>tag</td>
+                <td>
+                  <input
+                    type="checkbox"
+                    class="checkmark"
+                    id="checkbox"
+                    name="checkbox"
+                    value="checkbox"
                   />
-                </button>
-              </td>
-              <td>
-                <button data-row="01" class="buttons delete-btn">
-                  <img
-                    src="/assets/img/icons/trash-can.svg"
-                    height="24px"
-                    width="24px"
-                  />
-                </button>
-              </td>
-            </tr>
+                </td>
+                <td>
+                  <button class="buttons">
+                    <img
+                      src="/assets/img/icons/pencil.svg"
+                      height="24px"
+                      width="24px"
+                    />
+                  </button>
+                </td>
+                <td>
+                  <button data-row="01" class="buttons delete-btn">
+                    <img
+                      src="/assets/img/icons/trash-can.svg"
+                      height="24px"
+                      width="24px"
+                    />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
           </table>
+          <div class="pagination-buttons">
+            <button id="previousButton" disabled>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="size-6"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+            <button id="nextButton">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="size-6"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
         </main>
       </section>
     </div>
