@@ -160,3 +160,7 @@ dialog {
 .pagination-buttons button:not(:disabled):hover {
   background-color: var(--primary);
 }
+
+#table-appointment-body > tr {
+  height: 71px;
+}
