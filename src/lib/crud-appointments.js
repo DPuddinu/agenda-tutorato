@@ -24,15 +24,15 @@ export function getAppointmentById(id) {
 }
 
 export function createAppointment(appointment) {
-  const loggedUserId = sessionStorage.getItem(LOGGEDUSER_KEY);
-  if(!loggedUserId) return;
+  const loggedUserId = Number(sessionStorage.getItem(LOGGEDUSER_KEY));
+  if (!loggedUserId) return;
 
   const appointments = getAppointments();
   const id = generateId();
   const newAppointment = new Appointment({
     ...appointment,
     id,
-    userId: loggedUserId,
+    userId: Number(loggedUserId),
     creationDate: new Date(),
     updateDate: new Date(),
   });
@@ -62,6 +62,7 @@ export function updateAppointment(updatedAppointment) {
 }
 
 export function deleteAppointment(id) {
+  const numberId = Number(id);
   const appointments = getAppointments();
-  saveAppointments(appointments.filter((appointment) => appointment.id !== id));
+  saveAppointments(appointments.filter((element) => element.id !== numberId));
 }

@@ -9,7 +9,6 @@ import {
   DESCRIPTION_KEY,
   CATEGORY_KEY,
   DUEDATE_KEY,
-  APPOINTMENTS_KEY,
 } from "./common.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -104,7 +103,7 @@ export function addAppointmentRow(appointment) {
 
 export function getAppointmentPayload() {
   return new Appointment({
-    userId: sessionStorage.getItem(LOGGEDUSER_KEY),
+    userId: Number(sessionStorage.getItem(LOGGEDUSER_KEY)),
     description: document.getElementById(DESCRIPTION_KEY).value,
     dueDate: new Date(document.getElementById(DUEDATE_KEY).value),
     category: document.getElementById(CATEGORY_KEY).value,
