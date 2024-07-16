@@ -10,6 +10,10 @@ import {
   CATEGORY_KEY,
   DUEDATE_KEY,
 } from "./common.js";
+import {
+  sortAppointmentsByCreationDate,
+  sortAppointmentsByCategory,
+} from "./sort-appointment.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const deleteButtons = document.querySelectorAll(".delete-btn");
@@ -36,6 +40,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const appointments = getAppointments();
   populateAppointmentsTable(appointments);
+
+  const sortCreationDateBtn = document.querySelector("#creationDateBtn");
+  let creationSortDirection = true;
+  sortCreationDateBtn.addEventListener("click", () => {
+    creationSortDirection = !creationSortDirection;
+    const sorted = sortAppointmentsByCreationDate(
+      getAppointments(),
+      creationSortDirection
+    );
+    updateAppointmentsTable(sorted);
+  });
+
+  let categorySortDirection = true;
+  const sortCategoriesBtn = document.querySelector("#arrowCategoryBtn");
+  sortCategoriesBtn.addEventListener("click", () => {
+    categorySortDirection = !categorySortDirection;
+    const sorted = sortAppointmentsByCategory(
+      getAppointments(),
+      categorySortDirection
+    );
+    updateAppointmentsTable(sorted);
+  });
 });
 
 function setDeleteRowBtn(btn) {
@@ -57,8 +83,8 @@ export function addAppointmentRow(appointment) {
   const dateCell = document.createElement("td");
   dateCell.textContent = creationDate.toDateString();
 
-  const appointmentCell = document.createElement("td");
-  appointmentCell.textContent = description;
+  const descriptionCell = document.createElement("td");
+  descriptionCell.textContent = description;
 
   const categoryCell = document.createElement("td");
   categoryCell.textContent = category;
@@ -92,13 +118,13 @@ export function addAppointmentRow(appointment) {
   setDeleteRowBtn(deleteButton);
 
   row.appendChild(dateCell);
-  row.appendChild(appointmentCell);
+  row.appendChild(descriptionCell);
   row.appendChild(categoryCell);
   row.appendChild(completedCell);
   row.appendChild(editCell);
   row.appendChild(deleteCell);
 
-  document.getElementById("appointmentContainer").appendChild(row);
+  document.getElementById("table-appointment-body").appendChild(row);
 }
 
 export function getAppointmentPayload() {
@@ -139,14 +165,12 @@ function resetPayloadErrors() {
 }
 
 function clearAppointments() {
-  const tableDataContainer = document.querySelectorAll(
-    "#appointmentContainer tr"
-  );
-  tableDataContainer.forEach((row, i) => {
-    if (i > 0) {
-      row.remove();
-    }
-  });
+  const tableBodySelector = "#table-appointment-body";
+  document.querySelector(tableBodySelector)?.remove();
+  const table = document.querySelector("#appointmentContainer");
+  const tbody = document.createElement("tbody");
+  tbody.id = "table-appointment-body";
+  table.appendChild(tbody);
 }
 
 function populateAppointmentsTable(appointments) {
@@ -155,7 +179,7 @@ function populateAppointmentsTable(appointments) {
   });
 }
 
-function updateUI(appointments) {
+function updateAppointmentsTable(appointments) {
   clearAppointments();
   populateAppointmentsTable(appointments);
 }
