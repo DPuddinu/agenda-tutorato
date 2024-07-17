@@ -26,8 +26,8 @@ function paginateAppointments(appointments) {
   return pages;
 }
 
-function renderTable() {
-  paginatedAppointments = paginateAppointments(getAppointments());
+function renderTable(appointments) {
+  paginatedAppointments = paginateAppointments(appointments);
   clearAppointments();
   paginatedAppointments[currentPage].forEach((appointment) => {
     addAppointmentRow(appointment);
@@ -44,18 +44,18 @@ document.addEventListener("DOMContentLoaded", () => {
     .addEventListener("click", function () {
       if (currentPage > 0) {
         currentPage--;
-        renderTable();
+        renderTable(getAppointments());
       }
     });
 
   document.getElementById("nextButton").addEventListener("click", function () {
     if (currentPage < paginatedAppointments.length - 1) {
       currentPage++;
-      renderTable();
+      renderTable(getAppointments());
     }
   });
 
-  renderTable();
+  renderTable(getAppointments());
 
   const deleteButtons = document.querySelectorAll(".delete-btn");
   deleteButtons.forEach((button) => {
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const appointment = createAppointment(payload);
       addAppointmentRow(appointment);
       document.getElementById("dialog").close();
-      renderTable();
+      renderTable(getAppointments());
     }
   });
   document.getElementById("dialog").addEventListener("reset", () => {
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
       getAppointments(),
       creationSortDirection
     );
-    updateAppointmentsTable(sorted);
+    renderTable(sorted);
   });
 
   let categorySortDirection = true;
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
       getAppointments(),
       categorySortDirection
     );
-    updateAppointmentsTable(sorted);
+    renderTable(sorted);
   });
 });
 
@@ -111,7 +111,7 @@ function setDeleteRowBtn(btn) {
       deleteAppointment(id);
       const appointment = document.getElementById(id);
       appointment.remove();
-      renderTable();
+      renderTable(getAppointments());
     }
   });
 }
