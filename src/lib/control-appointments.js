@@ -26,7 +26,7 @@ function paginateAppointments(appointments) {
 function renderTable(appointments) {
   paginatedAppointments = paginateAppointments(appointments);
   clearAppointments();
-  paginatedAppointments[currentPage].forEach((appointment) => {
+  paginatedAppointments[currentPage]?.forEach((appointment) => {
     addAppointmentRow(appointment);
   });
 
