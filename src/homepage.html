@@ -34,7 +34,7 @@
         <header class="content-header">
           <h2>Agenda</h2>
 
-          <button id="showDialog">
+          <button id="showDialog" onclick="dialog.showModal()">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -52,17 +52,13 @@
 
         <dialog id="dialog">
           <header>
-            <h2>Create appointment</h2>
-            <form method="dialog">
-              <button type="button" id="closeDialog">x</button>
-            </form>
+            <h2 id="titleDialog">Create appointment</h2>
+            <button onclick="dialog.close();createForm.reset()">x</button>
           </header>
           <section>
-            <form class="flex justify-center flex-col gap-4">
+            <form id="createForm" class="flex justify-center flex-col gap-4">
               <div class="flex flex-col gap-1">
-                <label for="description" class="font-size-16">
-                  Description
-                </label>
+                <label for="description" class="font-size-16"> Description </label>
                 <textarea
                   autofocus
                   id="description"
@@ -91,6 +87,50 @@
               <footer class="flex gap-1 justify-end">
                 <input type="reset" placeholder="Reset" />
                 <input type="submit" placeholder="Submit" />
+              </footer>
+            </form>
+          </section>
+        </dialog>
+
+        <dialog id="editDialog">
+          <header>
+            <h2 id="titleDialog">Edit appointment</h2>
+            <button onclick="editDialog.close();editAppointmentForm.reset()">x</button>
+          </header>
+          <section>
+            <form id="editAppointmentForm" class="flex justify-center flex-col gap-4">
+              <div class="flex flex-col gap-1">
+                <label for="edit-dialog-description" class="font-size-16">
+                  Description
+                </label>
+                <textarea
+                  autofocus
+                  id="edit-dialog-description"
+                  name="edit-dialog-description"
+                  placeholder="describe your appointment"
+                ></textarea>
+                <span id="errorEditDescription" class="error"></span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="edit-dialog-dueDate" class="font-size-16">Due Date</label>
+                <input type="datetime-local" id="edit-dialog-dueDate" name="dueDate" />
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="edit-dialog-category" class="font-size-16">Category</label>
+                <select name="tag" id="edit-dialog-category">
+                  <option disabled selected value>select an option</option>
+                  <option value="job" name="job">job</option>
+                  <option value="sport" name="sport">sport</option>
+                  <option value="hobby" name="hobby">hobby</option>
+                  <option value="gym" name="gym">gym</option>
+                  <option value="school" name="school">school</option>
+                </select>
+                <span id="errorCategory" class="error"></span>
+              </div>
+
+              <footer class="flex gap-1 justify-end">
+                <input type="reset" placeholder="Reset" />
+                <input type="submit" id="edit-submit" placeholder="Submit" />
               </footer>
             </form>
           </section>
@@ -136,38 +176,7 @@
               </tr>
             </thead>
             <tbody id="table-appointment-body">
-              <tr id="01">
-                <td>mar 25 giu</td>
-                <td>appuntamento</td>
-                <td>tag</td>
-                <td>
-                  <input
-                    type="checkbox"
-                    class="checkmark"
-                    id="checkbox"
-                    name="checkbox"
-                    value="checkbox"
-                  />
-                </td>
-                <td>
-                  <button class="buttons">
-                    <img
-                      src="/assets/img/icons/pencil.svg"
-                      height="24px"
-                      width="24px"
-                    />
-                  </button>
-                </td>
-                <td>
-                  <button data-row="01" class="buttons delete-btn">
-                    <img
-                      src="/assets/img/icons/trash-can.svg"
-                      height="24px"
-                      width="24px"
-                    />
-                  </button>
-                </td>
-              </tr>
+              
             </tbody>
           </table>
         </main>
@@ -203,7 +212,6 @@
         </div>
       </section>
     </div>
-    <script src="./lib/dialog.js"></script>
     <script src="./lib/ui.js"></script>
     <script type="module" src="./lib/control-appointments.js"></script>
     <script type="module" src="./lib/logout.js"></script>
