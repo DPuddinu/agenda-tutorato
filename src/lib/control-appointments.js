@@ -15,11 +15,53 @@ import {
   sortAppointmentsByCategory,
 } from "./sort-appointment.js";
 
+let currentPage = 0;
+const itemsPerPage = 10;
+let paginatedAppointments = [];
+function paginateAppointments(appointments) {
+  const pages = [];
+  for (let i = 0; i < appointments.length; i += itemsPerPage) {
+    pages.push(appointments.slice(i, i + itemsPerPage));
+  }
+  return pages;
+}
+
+function renderTable(appointments) {
+  paginatedAppointments = paginateAppointments(appointments);
+  clearAppointments();
+  paginatedAppointments[currentPage].forEach((appointment) => {
+    addAppointmentRow(appointment);
+  });
+
+  document.getElementById("previousButton").disabled = currentPage === 0;
+  document.getElementById("nextButton").disabled =
+    currentPage === paginatedAppointments.length - 1;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  document
+    .getElementById("previousButton")
+    .addEventListener("click", function () {
+      if (currentPage > 0) {
+        currentPage--;
+        renderTable(getAppointments());
+      }
+    });
+
+  document.getElementById("nextButton").addEventListener("click", function () {
+    if (currentPage < paginatedAppointments.length - 1) {
+      currentPage++;
+      renderTable(getAppointments());
+    }
+  });
+
+  renderTable(getAppointments());
+
   const deleteButtons = document.querySelectorAll(".delete-btn");
   deleteButtons.forEach((button) => {
     setDeleteRowBtn(button);
   });
+
   document.getElementById("dialog").addEventListener("submit", (e) => {
     e.preventDefault();
     const payload = getAppointmentPayload();
@@ -32,14 +74,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const appointment = createAppointment(payload);
       addAppointmentRow(appointment);
       document.getElementById("dialog").close();
+      renderTable(getAppointments());
     }
   });
   document.getElementById("dialog").addEventListener("reset", () => {
     resetPayloadErrors();
   });
-
-  const appointments = getAppointments();
-  populateAppointmentsTable(appointments);
 
   const sortCreationDateBtn = document.querySelector("#creationDateBtn");
   let creationSortDirection = true;
@@ -49,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
       getAppointments(),
       creationSortDirection
     );
-    updateAppointmentsTable(sorted);
+    renderTable(sorted);
   });
 
   let categorySortDirection = true;
@@ -60,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
       getAppointments(),
       categorySortDirection
     );
-    updateAppointmentsTable(sorted);
+    renderTable(sorted);
   });
 });
 
@@ -71,6 +111,7 @@ function setDeleteRowBtn(btn) {
       deleteAppointment(id);
       const appointment = document.getElementById(id);
       appointment.remove();
+      renderTable(getAppointments());
     }
   });
 }
