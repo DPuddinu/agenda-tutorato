@@ -135,21 +135,20 @@ dialog {
   }
 }
 .pagination-buttons {
-  margin-top: 10px;
   display: flex;
   justify-content: center;
-}
-
-.pagination-buttons button {
-  margin: 0 5px;
-  padding: 10px 20px;
-  font-size: 16px;
-  color: #fff;
-  background-color: var(--primary);
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  gap: 0.5rem;
+  
+  button {
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: var(--primary);
+    border: none;
+    border-radius: 50px;
+  }
 }
 
 .pagination-buttons button:disabled {

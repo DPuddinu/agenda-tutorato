@@ -10,49 +10,52 @@ import {
   CATEGORY_KEY,
   DUEDATE_KEY,
 } from "./common.js";
+import {
+  sortAppointmentsByCreationDate,
+  sortAppointmentsByCategory,
+} from "./sort-appointment.js";
+
+let currentPage = 0;
+const itemsPerPage = 10;
+let paginatedAppointments = [];
+function paginateAppointments(appointments) {
+  const pages = [];
+  for (let i = 0; i < appointments.length; i += itemsPerPage) {
+    pages.push(appointments.slice(i, i + itemsPerPage));
+  }
+  return pages;
+}
+
+function renderTable() {
+  paginatedAppointments = paginateAppointments(getAppointments());
+  clearAppointments();
+  paginatedAppointments[currentPage].forEach((appointment) => {
+    addAppointmentRow(appointment);
+  });
+
+  document.getElementById("previousButton").disabled = currentPage === 0;
+  document.getElementById("nextButton").disabled =
+    currentPage === paginatedAppointments.length - 1;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  let currentPage = 0;
-  const itemsPerPage = 10;
-  let paginatedAppointments = [];
-
-  function paginateAppointments(appointments) {
-    const pages = [];
-    for (let i = 0; i < appointments.length; i += itemsPerPage) {
-      pages.push(appointments.slice(i, i + itemsPerPage));
-    }
-    return pages;
-  }
-
-  function renderTable(page) {
-    clearAppointments();
-    paginatedAppointments[page].forEach((appointment) => {
-      addAppointmentRow(appointment);
-    });
-
-    document.getElementById("previousButton").disabled = page === 0;
-    document.getElementById("nextButton").disabled =
-      page === paginatedAppointments.length - 1;
-  }
-
   document
     .getElementById("previousButton")
     .addEventListener("click", function () {
       if (currentPage > 0) {
         currentPage--;
-        renderTable(currentPage);
+        renderTable();
       }
     });
 
   document.getElementById("nextButton").addEventListener("click", function () {
     if (currentPage < paginatedAppointments.length - 1) {
       currentPage++;
-      renderTable(currentPage);
+      renderTable();
     }
   });
 
-  const appointments = getAppointments();
-  paginatedAppointments = paginateAppointments(appointments);
-  renderTable(currentPage);
+  renderTable();
 
   const deleteButtons = document.querySelectorAll(".delete-btn");
   deleteButtons.forEach((button) => {
@@ -71,11 +74,33 @@ document.addEventListener("DOMContentLoaded", () => {
       const appointment = createAppointment(payload);
       addAppointmentRow(appointment);
       document.getElementById("dialog").close();
-      location.reload();
+      renderTable();
     }
   });
   document.getElementById("dialog").addEventListener("reset", () => {
     resetPayloadErrors();
+  });
+
+  const sortCreationDateBtn = document.querySelector("#creationDateBtn");
+  let creationSortDirection = true;
+  sortCreationDateBtn.addEventListener("click", () => {
+    creationSortDirection = !creationSortDirection;
+    const sorted = sortAppointmentsByCreationDate(
+      getAppointments(),
+      creationSortDirection
+    );
+    updateAppointmentsTable(sorted);
+  });
+
+  let categorySortDirection = true;
+  const sortCategoriesBtn = document.querySelector("#arrowCategoryBtn");
+  sortCategoriesBtn.addEventListener("click", () => {
+    categorySortDirection = !categorySortDirection;
+    const sorted = sortAppointmentsByCategory(
+      getAppointments(),
+      categorySortDirection
+    );
+    updateAppointmentsTable(sorted);
   });
 });
 
@@ -85,9 +110,8 @@ function setDeleteRowBtn(btn) {
       const id = btn.dataset.row;
       deleteAppointment(id);
       const appointment = document.getElementById(id);
-      console.log(appointment);
       appointment.remove();
-      location.reload();
+      renderTable();
     }
   });
 }
@@ -100,8 +124,8 @@ export function addAppointmentRow(appointment) {
   const dateCell = document.createElement("td");
   dateCell.textContent = creationDate.toDateString();
 
-  const appointmentCell = document.createElement("td");
-  appointmentCell.textContent = description;
+  const descriptionCell = document.createElement("td");
+  descriptionCell.textContent = description;
 
   const categoryCell = document.createElement("td");
   categoryCell.textContent = category;
@@ -135,22 +159,13 @@ export function addAppointmentRow(appointment) {
   setDeleteRowBtn(deleteButton);
 
   row.appendChild(dateCell);
-  row.appendChild(appointmentCell);
+  row.appendChild(descriptionCell);
   row.appendChild(categoryCell);
   row.appendChild(completedCell);
   row.appendChild(editCell);
   row.appendChild(deleteCell);
 
-  // document.getElementById("appointmentContainer").appendChild(row);
-  const tableBody = document.querySelector("#table-appointment-body");
-  if (!tableBody) {
-    const newTBody = document.createElement("tbody");
-    newTBody.setAttribute("id", "table-appointment-body");
-    newTBody.appendChild(row);
-    document.getElementById("appointmentContainer").appendChild(newTBody);
-  } else {
-    tableBody.appendChild(row);
-  }
+  document.getElementById("table-appointment-body").appendChild(row);
 }
 
 export function getAppointmentPayload() {
@@ -191,10 +206,12 @@ function resetPayloadErrors() {
 }
 
 function clearAppointments() {
-  const tableDataContainer = document.querySelector("#table-appointment-body");
-  if (tableDataContainer) {
-    tableDataContainer.remove();
-  }
+  const tableBodySelector = "#table-appointment-body";
+  document.querySelector(tableBodySelector)?.remove();
+  const table = document.querySelector("#appointmentContainer");
+  const tbody = document.createElement("tbody");
+  tbody.id = "table-appointment-body";
+  table.appendChild(tbody);
 }
 
 function populateAppointmentsTable(appointments) {
@@ -203,7 +220,7 @@ function populateAppointmentsTable(appointments) {
   });
 }
 
-function updateUI(appointments) {
+function updateAppointmentsTable(appointments) {
   clearAppointments();
   populateAppointmentsTable(appointments);
 }

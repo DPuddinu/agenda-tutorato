@@ -100,25 +100,33 @@
           <table id="appointmentContainer" class="py-1">
             <thead>
               <tr>
-                <th class="flex items-center justify-center gap-">
+                <th class="flex items-center justify-center gap-1">
                   Creation Date
                   <button
-                    id="arrowDateBtn"
+                    id="creationDateBtn"
                     class="sort-btn"
-                    onclick="toggleImgIcon('arrowDateBtn', '../assets/img/arrow-down.svg', '../assets/img/arrow-up.svg')"
+                    onclick="toggleImgIcon('creationDateBtn', '../assets/img/arrow-down.svg', '../assets/img/arrow-up.svg')"
                   >
-                    <img class="arrow icon-sm" data-asc="true" />
+                    <img
+                      class="icon-sm arrow"
+                      data-asc="true"
+                      src="../assets/img/arrow-down.svg"
+                    />
                   </button>
                 </th>
                 <th>Description</th>
-                <th class="flex items-center justify-center gap-">
-                  Tag
+                <th class="flex items-center justify-center gap-1">
+                  Category
                   <button
-                    id="arrowTagBtn"
+                    id="arrowCategoryBtn"
                     class="sort-btn"
-                    onclick="toggleImgIcon('arrowTagBtn', '../assets/img/arrow-down.svg', '../assets/img/arrow-up.svg')"
+                    onclick="toggleImgIcon('arrowCategoryBtn', '../assets/img/arrow-down.svg', '../assets/img/arrow-up.svg')"
                   >
-                    <img class="arrow icon-sm" data-asc="true" />
+                    <img
+                      class="icon-sm arrow"
+                      data-asc="true"
+                      src="../assets/img/arrow-down.svg"
+                    />
                   </button>
                 </th>
 
@@ -196,8 +204,8 @@
       </section>
     </div>
     <script src="./lib/dialog.js"></script>
-    <script type="module" src="./lib/control-appointments.js"></script>
     <script src="./lib/ui.js"></script>
+    <script type="module" src="./lib/control-appointments.js"></script>
     <script type="module" src="./lib/logout.js"></script>
   </body>
 </html>

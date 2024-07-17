@@ -1,4 +1,4 @@
-export function sortAppointmentsByCreationDate(appointments, isAscending) {
+export function sortAppointmentsByCreationDate(appointments, isAscending = true) {
   if (isAscending) {
     return appointments.sort(
       (a, b) => a.creationDate.getTime() - b.creationDate.getTime()
@@ -10,7 +10,7 @@ export function sortAppointmentsByCreationDate(appointments, isAscending) {
   }
 }
 
-export function sortAppointmentsByCategory(appointments, isAscending) {
+export function sortAppointmentsByCategory(appointments, isAscending = true) {
   if (isAscending) {
     return appointments.sort(function (a, b) {
       if (a.category < b.category) {
