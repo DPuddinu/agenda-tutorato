@@ -6,12 +6,7 @@ import {
   updateAppointment,
 } from "./crud-appointments.js";
 import { Appointment } from "./models/appointment.js";
-import {
-  LOGGEDUSER_KEY,
-  DESCRIPTION_KEY,
-  CATEGORY_KEY,
-  DUEDATE_KEY,
-} from "./common.js";
+import { LOGGEDUSER_KEY, DESCRIPTION_KEY, CATEGORY_KEY, DUEDATE_KEY } from "./common.js";
 import {
   sortAppointmentsByCreationDate,
   sortAppointmentsByCategory,
@@ -41,14 +36,12 @@ function renderTable(appointments) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  document
-    .getElementById("previousButton")
-    .addEventListener("click", function () {
-      if (currentPage > 0) {
-        currentPage--;
-        renderTable(getAppointments());
-      }
-    });
+  document.getElementById("previousButton").addEventListener("click", function () {
+    if (currentPage > 0) {
+      currentPage--;
+      renderTable(getAppointments());
+    }
+  });
 
   document.getElementById("nextButton").addEventListener("click", function () {
     if (currentPage < paginatedAppointments.length - 1) {
@@ -97,10 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const sortCategoriesBtn = document.querySelector("#arrowCategoryBtn");
   sortCategoriesBtn.addEventListener("click", () => {
     categorySortDirection = !categorySortDirection;
-    const sorted = sortAppointmentsByCategory(
-      getAppointments(),
-      categorySortDirection
-    );
+    const sorted = sortAppointmentsByCategory(getAppointments(), categorySortDirection);
     renderTable(sorted);
   });
 });
@@ -146,6 +136,7 @@ function setEditRowBtn(btn) {
       } else {
         updateAppointment(updatedAppointment);
         document.getElementById("editDialog").close();
+        renderTable(getAppointments());
       }
     });
   });

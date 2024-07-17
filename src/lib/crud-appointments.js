@@ -9,7 +9,7 @@ export function getAppointments() {
       userId: Number(appointment.userId),
       creationDate: new Date(appointment.creationDate),
       updateDate: new Date(appointment.updateDate),
-      dueDate: appointment.dueDate ? new Date(appointment.dueDate): undefined,
+      dueDate: appointment.dueDate ? new Date(appointment.dueDate) : undefined,
     };
   });
   const loggedUserId = Number(sessionStorage.getItem(LOGGEDUSER_KEY));
@@ -24,8 +24,8 @@ export function getAppointmentById(id) {
 }
 
 export function createAppointment(appointment) {
-  if (!loggedUserId) return;
   const loggedUserId = sessionStorage.getItem(LOGGEDUSER_KEY);
+  if (!loggedUserId) return;
 
   const appointments = getAppointments();
   const id = generateId();
