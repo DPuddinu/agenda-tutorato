@@ -2,6 +2,8 @@ import {
   deleteAppointment,
   createAppointment,
   getAppointments,
+  getAppointmentById,
+  updateAppointment,
 } from "./crud-appointments.js";
 import { Appointment } from "./models/appointment.js";
 import {
@@ -11,33 +13,82 @@ import {
   DUEDATE_KEY,
   APPOINTMENTS_KEY,
 } from "./common.js";
-
 document.addEventListener("DOMContentLoaded", () => {
+  const editButtons = document.querySelectorAll(".edit-btn");
+  editButtons.forEach((button) => {
+    setEditRowBtn(button);
+  });
   const deleteButtons = document.querySelectorAll(".delete-btn");
   deleteButtons.forEach((button) => {
     setDeleteRowBtn(button);
   });
+
   document.getElementById("dialog").addEventListener("submit", (e) => {
     e.preventDefault();
     const payload = getAppointmentPayload();
     const errors = validatePayload(payload);
     resetPayloadErrors();
-
     if (!!Object.keys(errors).length) {
       setPayloadErrors(errors);
     } else {
       const appointment = createAppointment(payload);
       addAppointmentRow(appointment);
       document.getElementById("dialog").close();
+      e.target.reset();
     }
   });
   document.getElementById("dialog").addEventListener("reset", () => {
     resetPayloadErrors();
   });
-
   const appointments = getAppointments();
   populateAppointmentsTable(appointments);
 });
+function setEditRowBtn(btn) {
+  btn.addEventListener("click", () => {
+    const editDialog = document.getElementById("editDialog");
+    const id = Number(btn.dataset.row);
+    const appointment = getAppointmentById(id);
+    const userId = appointment.userId;
+    const creationDate = appointment.creationDate;
+    const description = appointment.description;
+    document.getElementById("edit-dialog-description").textContent = description;
+    const dueDate = appointment.dueDate;
+    if (dueDate) {
+      const date = dueDate.toISOString().substring(0, 10);
+      const time = dueDate.toLocaleTimeString().substring(0, 5);
+      document.getElementById("edit-dialog-dueDate").value = `${date}T${time}`;
+    } else {
+      document.getElementById("edit-dialog-dueDate").value = undefined;
+    }
+    const category = appointment.category;
+    document.getElementById("edit-dialog-category").value = category;
+    editDialog.showModal();
+    const form = document.getElementById("editAppointmentForm");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const description = form.elements["edit-dialog-description"].value;
+      const dueDate = new Date(form.elements["dueDate"].value);
+      const category = form.elements["edit-dialog-category"].value;
+      const updatedAppointment = {
+        id,
+        userId,
+        description,
+        creationDate,
+        dueDate,
+        category,
+      };
+
+      const errors = validatePayload(updatedAppointment);
+      resetPayloadErrors();
+      if (!!Object.keys(errors).length) {
+        setEditPayloadErrors(errors);
+      } else {
+        updateAppointment(updatedAppointment);
+        document.getElementById("editDialog").close();
+      }
+    });
+  });
+}
 
 function setDeleteRowBtn(btn) {
   btn.addEventListener("click", () => {
@@ -80,7 +131,7 @@ export function addAppointmentRow(appointment) {
   pencilIcon.src = "../assets/img/icons/pencil.svg";
   editButton.appendChild(pencilIcon);
   editCell.appendChild(editButton);
-  // setEditRowBtn(editButton);
+  setEditRowBtn(editButton);
 
   const deleteCell = document.createElement("td");
   const deleteButton = document.createElement("button");
@@ -115,18 +166,17 @@ export function getAppointmentPayload() {
 function validatePayload(appointment) {
   let errors = {};
   const { description, category } = appointment;
+  if (description.length > 40 || description.length < 4)
+    errors[DESCRIPTION_KEY] = "The description must be between 4 and 40 characters!";
   if (!description) errors[DESCRIPTION_KEY] = "The description is required!";
-  if (description.length > 40 && description.length < 4)
-    errors[DESCRIPTION_KEY] =
-      "The description must be between 4 and 40 characters!";
   if (!category) errors[CATEGORY_KEY] = "The category is required!";
+
   return errors;
 }
 
 function setPayloadErrors(errors) {
   if (errors[DESCRIPTION_KEY]) {
-    document.getElementById("errorDescription").textContent =
-      errors[DESCRIPTION_KEY];
+    document.getElementById("errorDescription").textContent = errors[DESCRIPTION_KEY];
   }
   if (errors[CATEGORY_KEY]) {
     document.getElementById("errorCategory").textContent = errors[CATEGORY_KEY];
@@ -134,15 +184,22 @@ function setPayloadErrors(errors) {
   return errors;
 }
 
+function setEditPayloadErrors(errors) {
+  if (errors[DESCRIPTION_KEY]) {
+    document.getElementById("errorEditDescription").textContent = errors[DESCRIPTION_KEY];
+  }
+  if (errors[CATEGORY_KEY]) {
+    document.getElementById("").textContent = errors[CATEGORY_KEY];
+  }
+  return errors;
+}
 function resetPayloadErrors() {
   document.getElementById("errorDescription").textContent = "";
   document.getElementById("errorCategory").textContent = "";
 }
 
 function clearAppointments() {
-  const tableDataContainer = document.querySelectorAll(
-    "#appointmentContainer tr"
-  );
+  const tableDataContainer = document.querySelectorAll("#appointmentContainer tr");
   tableDataContainer.forEach((row, i) => {
     if (i > 0) {
       row.remove();
