@@ -38,7 +38,6 @@ function renderTable(appointments) {
 document.addEventListener("DOMContentLoaded", () => {
   if (!sessionStorage.getItem(LOGGEDUSER_KEY)) {
     window.location = "../../src/login.html";
-    console.log(LOGGEDUSER_KEY);
   }
   document
     .getElementById("previousButton")
