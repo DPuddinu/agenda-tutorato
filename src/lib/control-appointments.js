@@ -29,7 +29,7 @@ function paginateAppointments(appointments) {
 function renderTable(appointments) {
   paginatedAppointments = paginateAppointments(appointments);
   clearAppointments();
-  paginatedAppointments[currentPage].forEach((appointment) => {
+  paginatedAppointments[currentPage]?.forEach((appointment) => {
     addAppointmentRow(appointment);
   });
 
@@ -39,6 +39,10 @@ function renderTable(appointments) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  if (!sessionStorage.getItem(LOGGEDUSER_KEY)) {
+    window.location = "../../src/login.html";
+    console.log(LOGGEDUSER_KEY);
+  }
   document
     .getElementById("previousButton")
     .addEventListener("click", function () {
