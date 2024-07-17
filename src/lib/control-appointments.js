@@ -11,13 +11,54 @@ import {
   DESCRIPTION_KEY,
   CATEGORY_KEY,
   DUEDATE_KEY,
-  APPOINTMENTS_KEY,
 } from "./common.js";
-document.addEventListener("DOMContentLoaded", () => {
-  const editButtons = document.querySelectorAll(".edit-btn");
-  editButtons.forEach((button) => {
-    setEditRowBtn(button);
+import {
+  sortAppointmentsByCreationDate,
+  sortAppointmentsByCategory,
+} from "./sort-appointment.js";
+
+let currentPage = 0;
+const itemsPerPage = 10;
+let paginatedAppointments = [];
+function paginateAppointments(appointments) {
+  const pages = [];
+  for (let i = 0; i < appointments.length; i += itemsPerPage) {
+    pages.push(appointments.slice(i, i + itemsPerPage));
+  }
+  return pages;
+}
+
+function renderTable(appointments) {
+  paginatedAppointments = paginateAppointments(appointments);
+  clearAppointments();
+  paginatedAppointments[currentPage].forEach((appointment) => {
+    addAppointmentRow(appointment);
   });
+
+  document.getElementById("previousButton").disabled = currentPage === 0;
+  document.getElementById("nextButton").disabled =
+    currentPage === paginatedAppointments.length - 1;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document
+    .getElementById("previousButton")
+    .addEventListener("click", function () {
+      if (currentPage > 0) {
+        currentPage--;
+        renderTable(getAppointments());
+      }
+    });
+
+  document.getElementById("nextButton").addEventListener("click", function () {
+    if (currentPage < paginatedAppointments.length - 1) {
+      currentPage++;
+      renderTable(getAppointments());
+    }
+  });
+
+  renderTable(getAppointments());
+
   const deleteButtons = document.querySelectorAll(".delete-btn");
   deleteButtons.forEach((button) => {
     setDeleteRowBtn(button);
@@ -34,14 +75,34 @@ document.addEventListener("DOMContentLoaded", () => {
       const appointment = createAppointment(payload);
       addAppointmentRow(appointment);
       document.getElementById("dialog").close();
-      e.target.reset();
+      renderTable(getAppointments());
     }
   });
   document.getElementById("dialog").addEventListener("reset", () => {
     resetPayloadErrors();
   });
-  const appointments = getAppointments();
-  populateAppointmentsTable(appointments);
+
+  const sortCreationDateBtn = document.querySelector("#creationDateBtn");
+  let creationSortDirection = true;
+  sortCreationDateBtn.addEventListener("click", () => {
+    creationSortDirection = !creationSortDirection;
+    const sorted = sortAppointmentsByCreationDate(
+      getAppointments(),
+      creationSortDirection
+    );
+    renderTable(sorted);
+  });
+
+  let categorySortDirection = true;
+  const sortCategoriesBtn = document.querySelector("#arrowCategoryBtn");
+  sortCategoriesBtn.addEventListener("click", () => {
+    categorySortDirection = !categorySortDirection;
+    const sorted = sortAppointmentsByCategory(
+      getAppointments(),
+      categorySortDirection
+    );
+    renderTable(sorted);
+  });
 });
 function setEditRowBtn(btn) {
   btn.addEventListener("click", () => {
@@ -97,6 +158,7 @@ function setDeleteRowBtn(btn) {
       deleteAppointment(id);
       const appointment = document.getElementById(id);
       appointment.remove();
+      renderTable(getAppointments());
     }
   });
 }
@@ -109,8 +171,8 @@ export function addAppointmentRow(appointment) {
   const dateCell = document.createElement("td");
   dateCell.textContent = creationDate.toDateString();
 
-  const appointmentCell = document.createElement("td");
-  appointmentCell.textContent = description;
+  const descriptionCell = document.createElement("td");
+  descriptionCell.textContent = description;
 
   const categoryCell = document.createElement("td");
   categoryCell.textContent = category;
@@ -144,18 +206,18 @@ export function addAppointmentRow(appointment) {
   setDeleteRowBtn(deleteButton);
 
   row.appendChild(dateCell);
-  row.appendChild(appointmentCell);
+  row.appendChild(descriptionCell);
   row.appendChild(categoryCell);
   row.appendChild(completedCell);
   row.appendChild(editCell);
   row.appendChild(deleteCell);
 
-  document.getElementById("appointmentContainer").appendChild(row);
+  document.getElementById("table-appointment-body").appendChild(row);
 }
 
 export function getAppointmentPayload() {
   return new Appointment({
-    userId: sessionStorage.getItem(LOGGEDUSER_KEY),
+    userId: Number(sessionStorage.getItem(LOGGEDUSER_KEY)),
     description: document.getElementById(DESCRIPTION_KEY).value,
     dueDate: new Date(document.getElementById(DUEDATE_KEY).value),
     category: document.getElementById(CATEGORY_KEY).value,
@@ -199,12 +261,12 @@ function resetPayloadErrors() {
 }
 
 function clearAppointments() {
-  const tableDataContainer = document.querySelectorAll("#appointmentContainer tr");
-  tableDataContainer.forEach((row, i) => {
-    if (i > 0) {
-      row.remove();
-    }
-  });
+  const tableBodySelector = "#table-appointment-body";
+  document.querySelector(tableBodySelector)?.remove();
+  const table = document.querySelector("#appointmentContainer");
+  const tbody = document.createElement("tbody");
+  tbody.id = "table-appointment-body";
+  table.appendChild(tbody);
 }
 
 function populateAppointmentsTable(appointments) {
@@ -213,7 +275,7 @@ function populateAppointmentsTable(appointments) {
   });
 }
 
-function updateUI(appointments) {
+function updateAppointmentsTable(appointments) {
   clearAppointments();
   populateAppointmentsTable(appointments);
 }
