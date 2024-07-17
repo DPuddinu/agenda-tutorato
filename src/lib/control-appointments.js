@@ -36,12 +36,17 @@ function renderTable(appointments) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("previousButton").addEventListener("click", function () {
-    if (currentPage > 0) {
-      currentPage--;
-      renderTable(getAppointments());
-    }
-  });
+  if (!sessionStorage.getItem(LOGGEDUSER_KEY)) {
+    window.location = "../../src/login.html";
+  }
+  document
+    .getElementById("previousButton")
+    .addEventListener("click", function () {
+      if (currentPage > 0) {
+        currentPage--;
+        renderTable(getAppointments());
+      }
+    });
 
   document.getElementById("nextButton").addEventListener("click", function () {
     if (currentPage < paginatedAppointments.length - 1) {
