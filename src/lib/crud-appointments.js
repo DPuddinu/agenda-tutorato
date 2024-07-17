@@ -9,7 +9,7 @@ export function getAppointments() {
       userId: Number(appointment.userId),
       creationDate: new Date(appointment.creationDate),
       updateDate: new Date(appointment.updateDate),
-      dueDate: new Date(appointment.dueDate),
+      dueDate: appointment.dueDate ? new Date(appointment.dueDate) : undefined,
     };
   });
   const loggedUserId = Number(sessionStorage.getItem(LOGGEDUSER_KEY));
@@ -24,7 +24,7 @@ export function getAppointmentById(id) {
 }
 
 export function createAppointment(appointment) {
-  const loggedUserId = Number(sessionStorage.getItem(LOGGEDUSER_KEY));
+  const loggedUserId = sessionStorage.getItem(LOGGEDUSER_KEY);
   if (!loggedUserId) return;
 
   const appointments = getAppointments();
@@ -51,7 +51,7 @@ export function updateAppointment(updatedAppointment) {
   const appointments = getAppointments();
   saveAppointments(
     appointments.map((appointment) =>
-      appointment.id === updatedAppointment.id
+      Number(appointment.id) === updatedAppointment.id
         ? {
             ...updatedAppointment,
             updateDate: new Date(),
@@ -64,5 +64,5 @@ export function updateAppointment(updatedAppointment) {
 export function deleteAppointment(id) {
   const numberId = Number(id);
   const appointments = getAppointments();
-  saveAppointments(appointments.filter((element) => element.id !== numberId));
+  saveAppointments(appointments.filter((appointment) => appointment.id !== Number(id)));
 }
