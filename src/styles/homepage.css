@@ -79,8 +79,8 @@ table {
 
 .logout {
   border: none;
-  border-radius: 20%;
-  background: red;
+  border-radius: .25rem;
+  background: rgb(239, 82, 82);
   font-size: 20px;
   font-weight: bold;
   height: 2em;
@@ -138,7 +138,7 @@ dialog {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  
+
   button {
     display: flex;
     justify-content: center;
@@ -162,4 +162,11 @@ dialog {
 
 #table-appointment-body > tr {
   height: 71px;
+}
+
+#paginationBtn {
+  display: none;
+}
+section:has(tbody>tr) #paginationBtn {
+  display: flex;
 }
