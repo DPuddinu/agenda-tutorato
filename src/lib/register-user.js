@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     const credential = getCredentialRegister();
     const errors = validateRegister(credential);
-
+    
     if (!!Object.keys(errors).length) {
       setRegisterErrors(errors);
     } else {

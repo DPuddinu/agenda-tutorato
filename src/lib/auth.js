@@ -8,6 +8,7 @@ import {
   PASS_KEY,
   USERNAME_KEY,
   LOGGEDUSER_KEY,
+  USER_EXISTS,
 } from "./common.js";
 
 //Funzione per prendere i dati
@@ -23,17 +24,12 @@ export function getCredentialLogin() {
 }
 
 export function register({ name, password }) {
-  
   const user_id = generateId();
-  // prendi l'oggetto users dalla key USERS_KEY, convertilo in oggetto con JSON.parse(), verifica che non sia già presente l'utente, se non è presente fai il push del nuovo utente nell'array, infine salva il nuovo array nel localstorage
+
   // Recupera l'oggetto users dal localStorage
   const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
   const usersAuth = JSON.parse(localStorage.getItem(USERAUTH_KEY)) || [];
 
-  // Verifica che l'utente non sia già presente
-  const userExists = users.some((user) => user.name === name);
-
-  if (!userExists) {
     // Aggiungi il nuovo utente all'array
     users.push(new User({ id: user_id, name }));
     usersAuth.push(new UserAuth({ id: generateId(), password, user_id }));
@@ -43,9 +39,6 @@ export function register({ name, password }) {
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
     localStorage.setItem(USERAUTH_KEY, JSON.stringify(usersAuth));
     alert("Registrazione completata!");
-  } else {
-    alert("Invalid credentials!");
-  }
 }
 
 //Funzione login
@@ -71,9 +64,10 @@ export function login({ name, password }) {
   alert("Utente non trovato");
   return null;
 }
+
 export const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,15}$/;
-//Funzione per controllare i dati in ingresso
+  //Funzione per controllare i dati in ingresso
 export function validateRegister({ name, password, passwordConfirm }) {
   let errors = {};
   if (name.length > 10 || name.length < 3)
@@ -81,10 +75,19 @@ export function validateRegister({ name, password, passwordConfirm }) {
 
   if (name === "") errors[USERNAME_KEY] = "Username required";
   if (passwordConfirm === "") errors[CONFIRM_KEY] = "Confirm password required";
-  if (password !== passwordConfirm && passwordConfirm !== "")
+  if (password !== passwordConfirm)
     errors[CONFIRM_KEY] = "Password don't match retype your Password";
 
   if (!passwordRegex.test(password)) errors[PASS_KEY] = "Invalid password";
+
+  // Recupera l'oggetto users dal localStorage
+  const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+  
+  // Verifica che l'utente non sia già presente
+  const userExists = users.some((user) => user.name === name);
+  if(userExists){
+    errors[USER_EXISTS] = 'Invalid Credentials';
+  }
   return errors;
 }
 
@@ -106,6 +109,10 @@ export function setRegisterErrors(errors) {
   }
   if (errors[CONFIRM_KEY]) {
     document.getElementById("errorConfi").textContent = errors[CONFIRM_KEY];
+  }
+  if (errors[USER_EXISTS]) {
+    document.getElementById("invalid-credentials").textContent =
+      errors[USER_EXISTS];
   }
   return errors;
 }
