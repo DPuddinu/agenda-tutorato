@@ -57,67 +57,23 @@
           </header>
           <section>
             <form id="createForm" class="flex justify-center flex-col gap-4">
-            <div class="flex flex-col gap-1">
-                <label for="description" class="font-size-16"> Description </label>
-              <textarea
-                autofocus
-                id="description"
-                name="description"
-                placeholder="describe your appointment"
-              ></textarea>
-              <span id="errorDescription" class="error"></span>
-            </div>
-            <div class="flex flex-col gap-1">
-              <label for="dueDate" class="font-size-16">Due Date</label>
-              <input type="datetime-local" id="dueDate" name="dueDate" />
-            </div>
-            <div class="flex flex-col gap-1">
-              <label for="category" class="font-size-16">Category</label>
-              <select name="tag" id="category">
-                <option disabled selected value>select an option</option>
-                <option value="job" name="job">job</option>
-                <option value="sport" name="sport">sport</option>
-                <option value="hobby" name="hobby">hobby</option>
-                <option value="gym" name="gym">gym</option>
-                <option value="school" name="school">school</option>
-              </select>
-              <span id="errorCategory" class="error"></span>
-            </div>
-
-            <footer class="flex gap-1 justify-end">
-              <input type="reset" placeholder="Reset" />
-              <input type="submit" placeholder="Submit" />
-            </footer>
-          </form>
-          </section>
-        </dialog>
-
-        <dialog id="editDialog">
-          <header>
-            <h2 id="titleDialog">Edit appointment</h2>
-            <button onclick="editDialog.close();editAppointmentForm.reset()">x</button>
-          </header>
-          <section>
-            <form id="editAppointmentForm" class="flex justify-center flex-col gap-4">
               <div class="flex flex-col gap-1">
-                <label for="edit-dialog-description" class="font-size-16">
-                  Description
-                </label>
+                <label for="description" class="font-size-16"> Description </label>
                 <textarea
                   autofocus
-                  id="edit-dialog-description"
-                  name="edit-dialog-description"
+                  id="description"
+                  name="description"
                   placeholder="describe your appointment"
                 ></textarea>
-                <span id="errorEditDescription" class="error"></span>
+                <span id="errorDescription" class="error"></span>
               </div>
               <div class="flex flex-col gap-1">
-                <label for="edit-dialog-dueDate" class="font-size-16">Due Date</label>
-                <input type="datetime-local" id="edit-dialog-dueDate" name="dueDate" />
+                <label for="dueDate" class="font-size-16">Due Date</label>
+                <input type="datetime-local" id="dueDate" name="dueDate" />
               </div>
               <div class="flex flex-col gap-1">
-                <label for="edit-dialog-category" class="font-size-16">Category</label>
-                <select name="tag" id="edit-dialog-category">
+                <label for="category" class="font-size-16">Category</label>
+                <select name="tag" id="category">
                   <option disabled selected value>select an option</option>
                   <option value="job" name="job">job</option>
                   <option value="sport" name="sport">sport</option>
@@ -130,7 +86,7 @@
 
               <footer class="flex gap-1 justify-end">
                 <input type="reset" placeholder="Reset" />
-                <input type="submit" id="edit-submit" placeholder="Submit" />
+                <input type="submit" placeholder="Submit" />
               </footer>
             </form>
           </section>
