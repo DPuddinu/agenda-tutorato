@@ -14,40 +14,37 @@
           <div class="logo">
             <img src="../assets/img/noto-v1_notebook.svg" />
           </div>
-          <input min="3" max="10" id="user" type="text" placeholder="User" />
-          <span id="errorUser" class="error"></span>
-          <div class="flex gap-2">
-            <input
-              min="5"
-              id="password"
-              type="password"
-              placeholder="Password"
-            />
-            <button
-              class="flex justify-center items-center"
-              type="button"
-              id="reveal-password-btn"
-              onclick="revealPassword('reveal-password-btn','password')"
-            >
-              <img src="../assets/img/eye-slash.svg" />
-            </button>
-          </div>
-          <span id="errorPass" class="error"></span>
-          <div class="flex gap-2">
-            <input
-              min="5"
-              id="confirm"
-              type="password"
-              placeholder="Password confirm"
-            />
-            <button
-              class="flex justify-center items-center"
-              type="button"
-              id="reveal-passwordConfirm-btn"
-              onclick="revealPassword('reveal-passwordConfirm-btn','confirm')"
-            >
-              <img src="../assets/img/eye-slash.svg" />
-            </button>
+          <div class="flex flex-col items-baseline gap-2">
+            <input min="3" max="10" id="user" type="text" placeholder="User" />
+            <span id="errorUser" class="error"></span>
+            <div class="flex gap-2">
+              <input min="5" id="password" type="password" placeholder="Password" />
+              <button
+                class="flex justify-center items-center"
+                type="button"
+                id="reveal-password-btn"
+                onclick="revealPassword('reveal-password-btn','password')"
+              >
+                <img src="../assets/img/eye-slash.svg" />
+              </button>
+            </div>
+            <span id="errorPass" class="error"></span>
+            <div class="flex gap-2">
+              <input
+                min="5"
+                id="confirm"
+                type="password"
+                placeholder="Password confirm"
+              />
+              <button
+                class="flex justify-center items-center"
+                type="button"
+                id="reveal-passwordConfirm-btn"
+                onclick="revealPassword('reveal-passwordConfirm-btn','confirm')"
+              >
+                <img src="../assets/img/eye-slash.svg" />
+              </button>
+            </div>
           </div>
           <div id="errorConfi" class="error"></div>
           <button type="submit">Sign up</button>

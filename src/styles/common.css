@@ -164,3 +164,6 @@ input {
   display: flex;
   flex-grow: 1;
 }
+.items-baseline{
+  justify-content: baseline;
+}
