@@ -169,15 +169,18 @@ function setDeleteRowBtn(btn) {
 }
 
 export function addAppointmentRow(appointment) {
-  const { id, creationDate, description, category } = appointment;
+  const { id, creationDate, description, category, dueDate } = appointment;
   const row = document.createElement("tr");
   row.id = id;
 
-  const dateCell = document.createElement("td");
-  dateCell.textContent = creationDate.toDateString();
+  const creationDateCell = document.createElement("td");
+  creationDateCell.textContent = creationDate.toDateString();
 
   const descriptionCell = document.createElement("td");
   descriptionCell.textContent = description;
+
+  const dueDateCell = document.createElement("td");
+  dueDateCell.textContent = dueDate?.toDateString();
 
   const categoryCell = document.createElement("td");
   categoryCell.textContent = category;
@@ -212,8 +215,9 @@ export function addAppointmentRow(appointment) {
   deleteCell.appendChild(deleteButton);
   setDeleteRowBtn(deleteButton);
 
-  row.appendChild(dateCell);
+  row.appendChild(creationDateCell);
   row.appendChild(descriptionCell);
+  row.appendChild(dueDateCell);
   row.appendChild(categoryCell);
   row.appendChild(completedCell);
   row.appendChild(editCell);

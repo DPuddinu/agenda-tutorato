@@ -50,12 +50,6 @@
     color: var(--primary);
   }
 }
-.date {
-  border: 1px solid black;
-  padding: 0;
-  height: 2rem;
-  width: 4rem;
-}
 
 select {
   border: 1px solid black;
@@ -79,7 +73,7 @@ table {
 
 .logout {
   border: none;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   background: rgb(239, 82, 82);
   font-size: 20px;
   font-weight: bold;
@@ -167,6 +161,6 @@ dialog {
 #paginationBtn {
   display: none;
 }
-section:has(tbody>tr) #paginationBtn {
+section:has(tbody > tr) #paginationBtn {
   display: flex;
 }
