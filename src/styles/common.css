@@ -54,6 +54,9 @@ table {
 .flex-col {
   flex-direction: column;
 }
+.flex-row {
+  flex-direction: row;
+}
 .items-center {
   align-items: center;
 }
@@ -113,9 +116,7 @@ input {
 .error {
   color: var(--color-error);
 }
-.flex-col {
-  flex-direction: column;
-}
+
 .display-none {
   display: none;
 }
@@ -141,7 +142,6 @@ input {
   border: none;
   background: none;
   padding: 0;
-  display: flex;
   align-items: center;
   background: white;
 }
@@ -164,6 +164,6 @@ input {
   display: flex;
   flex-grow: 1;
 }
-.items-baseline{
+.items-baseline {
   justify-content: baseline;
 }
