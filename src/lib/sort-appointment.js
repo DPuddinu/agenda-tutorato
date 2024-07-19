@@ -10,6 +10,14 @@ export function sortAppointmentsByCreationDate(appointments, isAscending = true)
   }
 }
 
+export function sortAppointmentsByDueDate(appointments, isAscending = true) {
+  if (isAscending) {
+    return appointments.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
+  } else {
+    return appointments.sort((a, b) => b.dueDate.getTime() - a.dueDate.getTime());
+  }
+}
+
 export function sortAppointmentsByCategory(appointments, isAscending = true) {
   if (isAscending) {
     return appointments.sort(function (a, b) {

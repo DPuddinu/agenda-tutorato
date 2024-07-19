@@ -9,7 +9,7 @@ export function getAppointments() {
       userId: Number(appointment.userId),
       creationDate: new Date(appointment.creationDate),
       updateDate: new Date(appointment.updateDate),
-      dueDate: appointment.dueDate ? new Date(appointment.dueDate) : undefined,
+      dueDate: appointment.dueDate ? new Date(appointment.dueDate) : null,
     };
   });
   const loggedUserId = Number(sessionStorage.getItem(LOGGEDUSER_KEY));

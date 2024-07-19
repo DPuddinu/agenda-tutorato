@@ -6,14 +6,10 @@ import {
   updateAppointment,
 } from "./crud-appointments.js";
 import { Appointment } from "./models/appointment.js";
-import {
-  LOGGEDUSER_KEY,
-  DESCRIPTION_KEY,
-  CATEGORY_KEY,
-  DUEDATE_KEY,
-} from "./common.js";
+import { LOGGEDUSER_KEY, DESCRIPTION_KEY, CATEGORY_KEY, DUEDATE_KEY } from "./common.js";
 import {
   sortAppointmentsByCreationDate,
+  sortAppointmentsByDueDate,
   sortAppointmentsByCategory,
 } from "./sort-appointment.js";
 
@@ -44,14 +40,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!sessionStorage.getItem(LOGGEDUSER_KEY)) {
     window.location = "../../src/login.html";
   }
-  document
-    .getElementById("previousButton")
-    .addEventListener("click", function () {
-      if (currentPage > 0) {
-        currentPage--;
-        renderTable(getAppointments());
-      }
-    });
+  document.getElementById("previousButton").addEventListener("click", function () {
+    if (currentPage > 0) {
+      currentPage--;
+      renderTable(getAppointments());
+    }
+  });
 
   document.getElementById("nextButton").addEventListener("click", function () {
     if (currentPage < paginatedAppointments.length - 1) {
@@ -77,6 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       const appointment = createAppointment(payload);
       addAppointmentRow(appointment);
+      document.getElementById("createForm").reset();
       document.getElementById("dialog").close();
       renderTable(getAppointments());
     }
@@ -96,17 +91,30 @@ document.addEventListener("DOMContentLoaded", () => {
     renderTable(sorted);
   });
 
+  const sortDueDateBtn = document.querySelector("#arrowDueDateBtn");
+  let dueDateSortDirection = true;
+  sortDueDateBtn.addEventListener("click", () => {
+    dueDateSortDirection = !dueDateSortDirection;
+    const existDueDate = sortAppointmentsByDueDate(
+      getAppointments().filter((appointment) => appointment.dueDate !== null),
+      dueDateSortDirection
+    );
+    const notExistDueDate = getAppointments().filter(
+      (appointment) => appointment.dueDate === null
+    );
+    const sorted = existDueDate.concat(notExistDueDate);
+    renderTable(sorted);
+  });
+
   let categorySortDirection = true;
   const sortCategoriesBtn = document.querySelector("#arrowCategoryBtn");
   sortCategoriesBtn.addEventListener("click", () => {
     categorySortDirection = !categorySortDirection;
-    const sorted = sortAppointmentsByCategory(
-      getAppointments(),
-      categorySortDirection
-    );
+    const sorted = sortAppointmentsByCategory(getAppointments(), categorySortDirection);
     renderTable(sorted);
   });
 });
+
 function setEditRowBtn(btn) {
   btn.addEventListener("click", () => {
     const editDialog = document.getElementById("editDialog");
@@ -115,8 +123,7 @@ function setEditRowBtn(btn) {
     const userId = appointment.userId;
     const creationDate = appointment.creationDate;
     const description = appointment.description;
-    document.getElementById("edit-dialog-description").textContent =
-      description;
+    document.getElementById("edit-dialog-description").textContent = description;
     const dueDate = appointment.dueDate;
     if (dueDate) {
       const date = dueDate.toISOString().substring(0, 10);
@@ -238,8 +245,7 @@ function validatePayload(appointment) {
   let errors = {};
   const { description, category } = appointment;
   if (description.length > 40 || description.length < 4)
-    errors[DESCRIPTION_KEY] =
-      "The description must be between 4 and 40 characters!";
+    errors[DESCRIPTION_KEY] = "The description must be between 4 and 40 characters!";
   if (!description) errors[DESCRIPTION_KEY] = "The description is required!";
   if (!category) errors[CATEGORY_KEY] = "The category is required!";
 
@@ -248,8 +254,7 @@ function validatePayload(appointment) {
 
 function setPayloadErrors(errors) {
   if (errors[DESCRIPTION_KEY]) {
-    document.getElementById("errorDescription").textContent =
-      errors[DESCRIPTION_KEY];
+    document.getElementById("errorDescription").textContent = errors[DESCRIPTION_KEY];
   }
   if (errors[CATEGORY_KEY]) {
     document.getElementById("errorCategory").textContent = errors[CATEGORY_KEY];
@@ -259,8 +264,7 @@ function setPayloadErrors(errors) {
 
 function setEditPayloadErrors(errors) {
   if (errors[DESCRIPTION_KEY]) {
-    document.getElementById("errorEditDescription").textContent =
-      errors[DESCRIPTION_KEY];
+    document.getElementById("errorEditDescription").textContent = errors[DESCRIPTION_KEY];
   }
   if (errors[CATEGORY_KEY]) {
     document.getElementById("").textContent = errors[CATEGORY_KEY];
