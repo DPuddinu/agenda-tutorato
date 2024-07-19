@@ -188,10 +188,9 @@ export function addAppointmentRow(appointment) {
   const completedCell = document.createElement("td");
   const completed = document.createElement("input");
   completed.type = "checkbox";
-  completed.classList.add("checkmark");
-  completed.name = "checkbox";
   completed.checked = !!appointment.completionDate;
   completedCell.appendChild(completed);
+  checkState(completed, id);
 
   const editCell = document.createElement("td");
   const editButton = document.createElement("button");
@@ -281,13 +280,10 @@ function clearAppointments() {
   table.appendChild(tbody);
 }
 
-function populateAppointmentsTable(appointments) {
-  appointments.forEach((appointment) => {
-    addAppointmentRow(appointment);
+function checkState(checkbox, rowId) {
+  checkbox.addEventListener("change", (e) => {
+    const appointment = getAppointmentById(rowId);
+    appointment.completionDate = e.target.checked ? new Date() : null;
+    updateAppointment(appointment);
   });
-}
-
-function updateAppointmentsTable(appointments) {
-  clearAppointments();
-  populateAppointmentsTable(appointments);
 }
