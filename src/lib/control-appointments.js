@@ -6,7 +6,12 @@ import {
   updateAppointment,
 } from "./crud-appointments.js";
 import { Appointment } from "./models/appointment.js";
-import { LOGGEDUSER_KEY, DESCRIPTION_KEY, CATEGORY_KEY, DUEDATE_KEY } from "./common.js";
+import {
+  LOGGEDUSER_KEY,
+  DESCRIPTION_KEY,
+  CATEGORY_KEY,
+  DUEDATE_KEY,
+} from "./common.js";
 import {
   sortAppointmentsByCreationDate,
   sortAppointmentsByCategory,
@@ -95,7 +100,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const sortCategoriesBtn = document.querySelector("#arrowCategoryBtn");
   sortCategoriesBtn.addEventListener("click", () => {
     categorySortDirection = !categorySortDirection;
-    const sorted = sortAppointmentsByCategory(getAppointments(), categorySortDirection);
+    const sorted = sortAppointmentsByCategory(
+      getAppointments(),
+      categorySortDirection
+    );
     renderTable(sorted);
   });
 });
@@ -107,7 +115,8 @@ function setEditRowBtn(btn) {
     const userId = appointment.userId;
     const creationDate = appointment.creationDate;
     const description = appointment.description;
-    document.getElementById("edit-dialog-description").textContent = description;
+    document.getElementById("edit-dialog-description").textContent =
+      description;
     const dueDate = appointment.dueDate;
     if (dueDate) {
       const date = dueDate.toISOString().substring(0, 10);
@@ -175,11 +184,13 @@ export function addAppointmentRow(appointment) {
 
   const completedCell = document.createElement("td");
   const completed = document.createElement("input");
+  completed.setAttribute("data-row", id);
   completed.type = "checkbox";
   completed.classList.add("checkmark");
   completed.name = "checkbox";
   completed.checked = !!appointment.completionDate;
   completedCell.appendChild(completed);
+  checkState(completed);
 
   const editCell = document.createElement("td");
   const editButton = document.createElement("button");
@@ -225,7 +236,8 @@ function validatePayload(appointment) {
   let errors = {};
   const { description, category } = appointment;
   if (description.length > 40 || description.length < 4)
-    errors[DESCRIPTION_KEY] = "The description must be between 4 and 40 characters!";
+    errors[DESCRIPTION_KEY] =
+      "The description must be between 4 and 40 characters!";
   if (!description) errors[DESCRIPTION_KEY] = "The description is required!";
   if (!category) errors[CATEGORY_KEY] = "The category is required!";
 
@@ -234,7 +246,8 @@ function validatePayload(appointment) {
 
 function setPayloadErrors(errors) {
   if (errors[DESCRIPTION_KEY]) {
-    document.getElementById("errorDescription").textContent = errors[DESCRIPTION_KEY];
+    document.getElementById("errorDescription").textContent =
+      errors[DESCRIPTION_KEY];
   }
   if (errors[CATEGORY_KEY]) {
     document.getElementById("errorCategory").textContent = errors[CATEGORY_KEY];
@@ -244,7 +257,8 @@ function setPayloadErrors(errors) {
 
 function setEditPayloadErrors(errors) {
   if (errors[DESCRIPTION_KEY]) {
-    document.getElementById("errorEditDescription").textContent = errors[DESCRIPTION_KEY];
+    document.getElementById("errorEditDescription").textContent =
+      errors[DESCRIPTION_KEY];
   }
   if (errors[CATEGORY_KEY]) {
     document.getElementById("").textContent = errors[CATEGORY_KEY];
@@ -274,4 +288,20 @@ function populateAppointmentsTable(appointments) {
 function updateAppointmentsTable(appointments) {
   clearAppointments();
   populateAppointmentsTable(appointments);
+}
+
+function checkState(checkmark) {
+  checkmark.addEventListener("change", (e) => {
+    e.preventDefault();
+    const checkId = Number(checkmark.dataset.row);
+    if (checkmark.checked) {
+      const appointment = getAppointmentById(checkId);
+      appointment.completionDate = new Date();
+      updateAppointment(appointment);
+    } else {
+      const appointment = getAppointmentById(checkId);
+      appointment.completionDate = null;
+      updateAppointment(appointment);
+    }
+  });
 }
