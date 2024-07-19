@@ -187,13 +187,10 @@ export function addAppointmentRow(appointment) {
 
   const completedCell = document.createElement("td");
   const completed = document.createElement("input");
-  completed.setAttribute("data-row", id);
   completed.type = "checkbox";
-  completed.classList.add("checkmark");
-  completed.name = "checkbox";
   completed.checked = !!appointment.completionDate;
   completedCell.appendChild(completed);
-  checkState(completed);
+  checkState(completed, id);
 
   const editCell = document.createElement("td");
   const editButton = document.createElement("button");
@@ -283,29 +280,10 @@ function clearAppointments() {
   table.appendChild(tbody);
 }
 
-function populateAppointmentsTable(appointments) {
-  appointments.forEach((appointment) => {
-    addAppointmentRow(appointment);
-  });
-}
-
-function updateAppointmentsTable(appointments) {
-  clearAppointments();
-  populateAppointmentsTable(appointments);
-}
-
-function checkState(checkmark) {
-  checkmark.addEventListener("change", (e) => {
-    e.preventDefault();
-    const checkId = Number(checkmark.dataset.row);
-    if (checkmark.checked) {
-      const appointment = getAppointmentById(checkId);
-      appointment.completionDate = new Date();
-      updateAppointment(appointment);
-    } else {
-      const appointment = getAppointmentById(checkId);
-      appointment.completionDate = null;
-      updateAppointment(appointment);
-    }
+function checkState(checkbox, rowId) {
+  checkbox.addEventListener("change", (e) => {
+    const appointment = getAppointmentById(rowId);
+    appointment.completionDate = e.target.checked ? new Date() : null;
+    updateAppointment(appointment);
   });
 }

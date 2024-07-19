@@ -28,6 +28,11 @@ input[type="date"] {
   border-radius: 0.6rem;
   border: transparent;
 }
+input[type="checkbox"] {
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+}
 .grow {
   flex-grow: 1;
 }
