@@ -62,7 +62,8 @@ export function updateAppointment(updatedAppointment) {
 }
 
 export function deleteAppointment(id) {
-  const numberId = Number(id);
   const appointments = getAppointments();
-  saveAppointments(appointments.filter((appointment) => appointment.id !== Number(id)));
+  saveAppointments(
+    appointments.filter((appointment) => appointment.id !== Number(id))
+  );
 }
