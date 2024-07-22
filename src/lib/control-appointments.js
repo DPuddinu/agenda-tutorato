@@ -6,7 +6,13 @@ import {
   updateAppointment,
 } from "./crud-appointments.js";
 import { Appointment } from "./models/appointment.js";
-import { LOGGEDUSER_KEY, DESCRIPTION_KEY, CATEGORY_KEY, DUEDATE_KEY } from "./common.js";
+import {
+  LOGGEDUSER_KEY,
+  DESCRIPTION_KEY,
+  CATEGORY_KEY,
+  DUEDATE_KEY,
+  CURRENTAPPOINTMENTS_KEY,
+} from "./common.js";
 import {
   sortAppointmentsByCreationDate,
   sortAppointmentsByDueDate,
@@ -16,6 +22,10 @@ import {
 let currentPage = 0;
 const itemsPerPage = 10;
 let paginatedAppointments = [];
+let currentAppointment = [];
+let currentSortType = null;
+let currentSortDirection = true;
+
 function paginateAppointments(appointments) {
   const pages = [];
   for (let i = 0; i < appointments.length; i += itemsPerPage) {
@@ -37,24 +47,34 @@ function renderTable(appointments) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  sessionStorage.setItem(
+    CURRENTAPPOINTMENTS_KEY,
+    JSON.stringify(getAppointments())
+  );
+  currentAppointment = JSON.parse(
+    sessionStorage.getItem(CURRENTAPPOINTMENTS_KEY)
+  );
+
   if (!sessionStorage.getItem(LOGGEDUSER_KEY)) {
     window.location = "../../src/login.html";
   }
-  document.getElementById("previousButton").addEventListener("click", function () {
-    if (currentPage > 0) {
-      currentPage--;
-      renderTable(getAppointments());
-    }
-  });
+  document
+    .getElementById("previousButton")
+    .addEventListener("click", function () {
+      if (currentPage > 0) {
+        currentPage--;
+        renderTable(currentAppointment);
+      }
+    });
 
   document.getElementById("nextButton").addEventListener("click", function () {
     if (currentPage < paginatedAppointments.length - 1) {
       currentPage++;
-      renderTable(getAppointments());
+      renderTable(currentAppointment);
     }
   });
 
-  renderTable(getAppointments());
+  renderTable(currentAppointment);
 
   const deleteButtons = document.querySelectorAll(".delete-btn");
   deleteButtons.forEach((button) => {
@@ -73,44 +93,62 @@ document.addEventListener("DOMContentLoaded", () => {
       addAppointmentRow(appointment);
       document.getElementById("createForm").reset();
       document.getElementById("dialog").close();
-      renderTable(getAppointments());
+      sessionStorage.setItem(
+        CURRENTAPPOINTMENTS_KEY,
+        JSON.stringify(getAppointments())
+      );
+      currentAppointment = JSON.parse(
+        sessionStorage.getItem(CURRENTAPPOINTMENTS_KEY)
+      );
+      applyCurrentSort();
+      renderTable(currentAppointment);
     }
   });
+
   document.getElementById("dialog").addEventListener("reset", () => {
     resetPayloadErrors();
   });
 
   const sortCreationDateBtn = document.querySelector("#creationDateBtn");
-  let creationSortDirection = true;
   sortCreationDateBtn.addEventListener("click", () => {
-    creationSortDirection = !creationSortDirection;
+    currentSortType = "creationDate";
+    currentSortDirection = !currentSortDirection;
     const sorted = sortAppointmentsByCreationDate(
       getAppointments(),
-      creationSortDirection
+      currentSortDirection
     );
+    sessionStorage.setItem(CURRENTAPPOINTMENTS_KEY, JSON.stringify(sorted));
+    currentAppointment = sorted;
     renderTable(sorted);
   });
 
   const sortDueDateBtn = document.querySelector("#arrowDueDateBtn");
-  let dueDateSortDirection = true;
   sortDueDateBtn.addEventListener("click", () => {
-    dueDateSortDirection = !dueDateSortDirection;
+    currentSortType = "dueDate";
+    currentSortDirection = !currentSortDirection;
     const existDueDate = sortAppointmentsByDueDate(
       getAppointments().filter((appointment) => appointment.dueDate !== null),
-      dueDateSortDirection
+      currentSortDirection
     );
     const notExistDueDate = getAppointments().filter(
       (appointment) => appointment.dueDate === null
     );
     const sorted = existDueDate.concat(notExistDueDate);
+    sessionStorage.setItem(CURRENTAPPOINTMENTS_KEY, JSON.stringify(sorted));
+    currentAppointment = sorted;
     renderTable(sorted);
   });
 
-  let categorySortDirection = true;
   const sortCategoriesBtn = document.querySelector("#arrowCategoryBtn");
   sortCategoriesBtn.addEventListener("click", () => {
-    categorySortDirection = !categorySortDirection;
-    const sorted = sortAppointmentsByCategory(getAppointments(), categorySortDirection);
+    currentSortType = "category";
+    currentSortDirection = !currentSortDirection;
+    const sorted = sortAppointmentsByCategory(
+      getAppointments(),
+      currentSortDirection
+    );
+    sessionStorage.setItem(CURRENTAPPOINTMENTS_KEY, JSON.stringify(sorted));
+    currentAppointment = sorted;
     renderTable(sorted);
   });
 });
@@ -123,7 +161,8 @@ function setEditRowBtn(btn) {
     const userId = appointment.userId;
     const creationDate = appointment.creationDate;
     const description = appointment.description;
-    document.getElementById("edit-dialog-description").textContent = description;
+    document.getElementById("edit-dialog-description").textContent =
+      description;
     const dueDate = appointment.dueDate;
     if (dueDate) {
       const date = dueDate.toISOString().substring(0, 10);
@@ -157,7 +196,9 @@ function setEditRowBtn(btn) {
       } else {
         updateAppointment(updatedAppointment);
         document.getElementById("editDialog").close();
-        renderTable(getAppointments());
+        currentAppointment = getAppointments();
+        applyCurrentSort();
+        renderTable(currentAppointment);
       }
     });
   });
@@ -170,24 +211,34 @@ function setDeleteRowBtn(btn) {
       deleteAppointment(id);
       const appointment = document.getElementById(id);
       appointment.remove();
-      renderTable(getAppointments());
+      sessionStorage.setItem(
+        CURRENTAPPOINTMENTS_KEY,
+        JSON.stringify(getAppointments())
+      );
+      currentAppointment = getAppointments();
+      applyCurrentSort();
+      renderTable(currentAppointment);
     }
   });
 }
 
 export function addAppointmentRow(appointment) {
   const { id, creationDate, description, category, dueDate } = appointment;
+  let dueDateString;
+
   const row = document.createElement("tr");
   row.id = id;
 
   const creationDateCell = document.createElement("td");
-  creationDateCell.textContent = creationDate.toDateString();
+  const creationDateString = new Date(creationDate);
+  creationDateCell.textContent = creationDateString.toDateString();
 
   const descriptionCell = document.createElement("td");
   descriptionCell.textContent = description;
 
   const dueDateCell = document.createElement("td");
-  dueDateCell.textContent = dueDate?.toDateString();
+  dueDate ? (dueDateString = new Date(dueDate)) : (dueDateString = null);
+  dueDateCell.textContent = dueDateString?.toDateString();
 
   const categoryCell = document.createElement("td");
   categoryCell.textContent = category;
@@ -228,6 +279,10 @@ export function addAppointmentRow(appointment) {
   row.appendChild(deleteCell);
 
   document.getElementById("table-appointment-body").appendChild(row);
+  sessionStorage.setItem(
+    CURRENTAPPOINTMENTS_KEY,
+    JSON.stringify(getAppointments())
+  );
 }
 
 export function getAppointmentPayload() {
@@ -244,7 +299,8 @@ function validatePayload(appointment) {
   let errors = {};
   const { description, category } = appointment;
   if (description.length > 40 || description.length < 4)
-    errors[DESCRIPTION_KEY] = "The description must be between 4 and 40 characters!";
+    errors[DESCRIPTION_KEY] =
+      "The description must be between 4 and 40 characters!";
   if (!description) errors[DESCRIPTION_KEY] = "The description is required!";
   if (!category) errors[CATEGORY_KEY] = "The category is required!";
 
@@ -253,7 +309,8 @@ function validatePayload(appointment) {
 
 function setPayloadErrors(errors) {
   if (errors[DESCRIPTION_KEY]) {
-    document.getElementById("errorDescription").textContent = errors[DESCRIPTION_KEY];
+    document.getElementById("errorDescription").textContent =
+      errors[DESCRIPTION_KEY];
   }
   if (errors[CATEGORY_KEY]) {
     document.getElementById("errorCategory").textContent = errors[CATEGORY_KEY];
@@ -263,10 +320,12 @@ function setPayloadErrors(errors) {
 
 function setEditPayloadErrors(errors) {
   if (errors[DESCRIPTION_KEY]) {
-    document.getElementById("errorEditDescription").textContent = errors[DESCRIPTION_KEY];
+    document.getElementById("errorEditDescription").textContent =
+      errors[DESCRIPTION_KEY];
   }
   if (errors[CATEGORY_KEY]) {
-    document.getElementById("").textContent = errors[CATEGORY_KEY];
+    document.getElementById("errorEditCategory").textContent =
+      errors[CATEGORY_KEY];
   }
   return errors;
 }
@@ -290,4 +349,33 @@ function checkState(checkbox, rowId) {
     appointment.completionDate = e.target.checked ? new Date() : null;
     updateAppointment(appointment);
   });
+}
+
+function applyCurrentSort() {
+  switch (currentSortType) {
+    case "creationDate":
+      currentAppointment = sortAppointmentsByCreationDate(
+        currentAppointment,
+        currentSortDirection
+      );
+      break;
+    case "dueDate":
+      const existDueDate = sortAppointmentsByDueDate(
+        currentAppointment.filter(
+          (appointment) => appointment.dueDate !== null
+        ),
+        currentSortDirection
+      );
+      const notExistDueDate = currentAppointment.filter(
+        (appointment) => appointment.dueDate === null
+      );
+      currentAppointment = existDueDate.concat(notExistDueDate);
+      break;
+    case "category":
+      currentAppointment = sortAppointmentsByCategory(
+        currentAppointment,
+        currentSortDirection
+      );
+      break;
+  }
 }
