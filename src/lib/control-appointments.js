@@ -25,6 +25,7 @@ let paginatedAppointments = [];
 let currentAppointment = [];
 let currentSortType = null;
 let currentSortDirection = true;
+let selectedAppointment;
 
 function paginateAppointments(appointments) {
   const pages = [];
@@ -73,12 +74,36 @@ document.addEventListener("DOMContentLoaded", () => {
       renderTable(currentAppointment);
     }
   });
+  const form = document.getElementById("editAppointmentForm");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
 
+    const description = form.elements["edit-dialog-description"].value;
+    const dueDate = new Date(form.elements["dueDate"].value);
+    const category = form.elements["edit-dialog-category"].value;
+    const updatedAppointment = {
+      ...selectedAppointment,
+      description,
+      dueDate,
+      category
+    };
+    const errors = validatePayload(updatedAppointment);
+    resetPayloadErrors();
+    if (!!Object.keys(errors).length) {
+      setEditPayloadErrors(errors);
+    } else {
+      updateAppointment(updatedAppointment);
+      document.getElementById("editDialog").close();
+      e.target.reset();
+      applyCurrentSort();
+      renderTable(getAppointments());
+    }
+  });
   renderTable(currentAppointment);
 
   const deleteButtons = document.querySelectorAll(".delete-btn");
-  deleteButtons.forEach((button) => {
-    setDeleteRowBtn(button);
+  deleteButtons.forEach((btn) => {
+    setDeleteRowBtn(btn);
   });
 
   document.getElementById("dialog").addEventListener("submit", (e) => {
@@ -153,17 +178,17 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-function setEditRowBtn(btn) {
-  btn.addEventListener("click", () => {
+function setEditRowBtn(editBtn) {
+  editBtn.addEventListener("click", () => {
     const editDialog = document.getElementById("editDialog");
-    const id = Number(btn.dataset.row);
+    const id = Number(editBtn.dataset.row);
     const appointment = getAppointmentById(id);
-    const userId = appointment.userId;
-    const creationDate = appointment.creationDate;
-    const description = appointment.description;
+    selectedAppointment = appointment;
+
+    const { description, dueDate, category } = appointment;
+
     document.getElementById("edit-dialog-description").textContent =
       description;
-    const dueDate = appointment.dueDate;
     if (dueDate) {
       const date = dueDate.toISOString().substring(0, 10);
       const time = dueDate.toLocaleTimeString().substring(0, 5);
@@ -171,55 +196,30 @@ function setEditRowBtn(btn) {
     } else {
       document.getElementById("edit-dialog-dueDate").value = undefined;
     }
-    const category = appointment.category;
     document.getElementById("edit-dialog-category").value = category;
     editDialog.showModal();
-    const form = document.getElementById("editAppointmentForm");
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const description = form.elements["edit-dialog-description"].value;
-      const dueDate = new Date(form.elements["dueDate"].value);
-      const category = form.elements["edit-dialog-category"].value;
-      const updatedAppointment = {
-        id,
-        userId,
-        description,
-        creationDate,
-        dueDate,
-        category,
-      };
-
-      const errors = validatePayload(updatedAppointment);
-      resetPayloadErrors();
-      if (!!Object.keys(errors).length) {
-        setEditPayloadErrors(errors);
-      } else {
-        updateAppointment(updatedAppointment);
-        document.getElementById("editDialog").close();
-        currentAppointment = getAppointments();
-        applyCurrentSort();
-        renderTable(currentAppointment);
-      }
-    });
   });
 }
 
-function setDeleteRowBtn(btn) {
-  btn.addEventListener("click", () => {
-    if (window.confirm("Do you really want to delete your appointment?")) {
-      const id = btn.dataset.row;
-      deleteAppointment(id);
-      const appointment = document.getElementById(id);
-      appointment.remove();
-      sessionStorage.setItem(
-        CURRENTAPPOINTMENTS_KEY,
-        JSON.stringify(getAppointments())
-      );
-      currentAppointment = getAppointments();
-      applyCurrentSort();
-      renderTable(currentAppointment);
-    }
-  });
+function setDeleteRowBtn(deleteBtn) {
+  deleteBtn.addEventListener("click", deleteRowHandler, { once: true });
+}
+
+function deleteRowHandler(e) {
+  e.preventDefault();
+  if (window.confirm("Do you really want to delete your appointment?")) {
+    const id = e.currentTarget.dataset.row;
+    deleteAppointment(id);
+    const appointment = document.getElementById(id);
+    appointment?.remove();
+    sessionStorage.setItem(
+      CURRENTAPPOINTMENTS_KEY,
+      JSON.stringify(getAppointments())
+    );
+    currentAppointment = getAppointments();
+    applyCurrentSort();
+    renderTable(currentAppointment);
+  }
 }
 
 export function addAppointmentRow(appointment) {
@@ -322,10 +322,6 @@ function setEditPayloadErrors(errors) {
   if (errors[DESCRIPTION_KEY]) {
     document.getElementById("errorEditDescription").textContent =
       errors[DESCRIPTION_KEY];
-  }
-  if (errors[CATEGORY_KEY]) {
-    document.getElementById("errorEditCategory").textContent =
-      errors[CATEGORY_KEY];
   }
   return errors;
 }
