@@ -10,6 +10,7 @@ export const DESCRIPTION_KEY = "description";
 export const DUEDATE_KEY = "dueDate";
 export const CATEGORY_KEY = "category";
 export const COMPLETED_KEY = "completedDate";
+export const CURRENTAPPOINTMENTS_KEY = "currentAppointments";
 
 export function generateId() {
   return Math.floor(Math.random() * 9999999);
